@@ -1,0 +1,805 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amscd}
+\usepackage{bbm}
+\usepackage[hmargin={3 cm,2cm}, top=3cm, bottom=2cm]{geometry}
+\usepackage[portuguese]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\title{\textbf{UM ESTUDO SOBRE INTEGRAIS DE CALIBRE}}
+\author{Pedro Vaz Pimenta}
+
+
+
+\newtheorem{mydef}{Definição}[section]
+\newtheorem{lem}[mydef]{Lema}
+\newtheorem{thrm}[mydef]{Teorema}
+\newtheorem{cor}[mydef]{Corolário}
+\newtheorem{prop}[mydef]{Proposição}
+\newtheorem{conj}[mydef]{Conjectura}
+\renewcommand{\theequation}{\arabic{chapter}.\arabic{section}.\arabic{equation}}
+\def\dem{\par\smallbreak\noindent {\textit{ Demonstração:}} \ }
+\def\eop{\hfill\rule{2.5mm}{2.5mm}}
+%
+%
+\theoremstyle{definition}
+\newtheorem{obs}[mydef]{Observação}
+\newtheorem{propris}[mydef]{Propriedades}
+\newtheorem{ex}[mydef]{Exemplo}
+\newtheorem{exerc}[mydef]{Exercício}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	
+	Este trabalho começa revisando conceitos e resultados fundamentais e necessários pra não só definir integração de calibre (ou seja, integrais de Henstock e Henstock-Stieltjes), como para permitir um entendimento mais abrangente sobre convergência e topologia, além de estabelecer uma linguagem mais elegante pra definir integral. Depois mostraremos que a integração por calibre serve pra generalizar não só a teoria de integração mais comum, que é a de Riemann, como também a teoria de Lebesgue na reta. Após isso, fornecemos uma condição necessária e suficiente pra poder integrar por Henstock e, com isso, demonstrando os dois Teoremas Fundamentais do Cálculo nesta teoria. Feito esta parte, mostramos algumas aplicações e concluímos com um análise de vantagens e desvantagens desta teoria de integração frente a outras, bem como suas consequências para o ensino de matemática nos cursos de graduação.  
+	
+\end{abstract}
+
+\section{Preâmbulo: Redes, filtros e espaços de convergência}
+
+Na maior parte da literatura, a integral é definida a partir de um conceito que remete bastante à ideia de convergência, porém a linguagem normalmente apresentada em livros-texto de análise ou cálculo não a coloca explicitamente como tal ou, em outras palavras, como um limite. Sendo assim, é interessante definir uma linguagem capaz de expressar o conceito de convergência com generalidade suficiente para que a integral seja calculada explicitamente desta forma. Geralmente, a convergência em análise se dá em termos de sequências em um espaço métrico, ou seja, dizemos que $(x_n)$ converge para $y$ se, para todo $\varepsilon >0$, existe um natural $N$ tal que se $n\geq N$ então $d(y,x_n) < \varepsilon $, logo, primeiramente, generalizaremos o conceito de sequência. Considerando que esta se trata de uma função $x:\mathbb{N}\rightarrow X$, que comumente é representada na notação $(x_n)_{n\in \mathbb{N}}$ ou apenas $(x_n)$, como feito anteriormente, substituiremos o $\mathbb{N}$ por algo mais geral. Para esta parte do texto, seguiremos a mesma linha traçada na referência [9]. 
+
+\begin{mydef}
+	Seja $X$ um conjunto. Uma relação $\preccurlyeq$ sobre $X$ é uma \textbf{pré-ordem} se: \\
+	
+	i) $x\preccurlyeq x$ para todo $x\in X$, \
+	
+	ii) Se $x\preccurlyeq y$ e $y\preccurlyeq z$ então $x\preccurlyeq z$	
+	
+\end{mydef}
+
+A pré-ordem serve de ingrediente para se definir inúmeras relações importantes em vários campos da matemática, dentre as quais podemos destacar:
+
+\begin{mydef}
+	Seja $(X,\preccurlyeq )$ um conjunto pré-ordenado. Dizemos que:\\	
+	
+	i)  $\preccurlyeq$ é uma uma ordem \textbf{parcial} se $x\preccurlyeq y$ e $y\preccurlyeq x$ implica que $x=y$.\
+	
+	ii) $\preccurlyeq$ é uma ordem \textbf{direcionada} (para cima) se, para todo $x,y\in X$, existe $z\in X$ tal que $x\preccurlyeq z$ e $y\preccurlyeq z$. Analogamente definimos o caso direcionado para baixo invertendo a ordem. Será adotada a convenção de omitir o termo ``para cima''. neste caso diremos que a ordem ou o conjunto é apenas direcionado. \
+	
+	iii) $\preccurlyeq$ é uma ordem \textbf{total} se for parcial e todos seus elementos forem comparáveis.\
+	
+	iv) $\preccurlyeq$ é uma \textbf{boa} ordem se for uma ordem total e todo subconjunto de $X$ possui um menor elemento. \
+	
+	v) $\preccurlyeq$ é uma \textbf{relação de equivalência} se  $x\preccurlyeq y$ implica  $y\preccurlyeq x$.
+	
+	
+\end{mydef}
+
+O mais importante da lista, no momento, é a ordem direcionada, pois, no lugar da boa ordem usual de $\mathbb{N}$, usaremos essa ordem num conjunto qualquer, o que nos dá a generalização do conceito de sequência: 
+
+\begin{mydef}
+	Uma \textbf{rede} num conjunto $X$ é uma função $x: \mathbb{D} \rightarrow X$, sendo $\mathbb{D}$ um conjunto direcionado. Usa-se a notação $(x_{\delta })$ para representar uma rede, sendo $\delta \in \mathbb{D}$.	
+\end{mydef}
+
+A seguir estão listados alguns termos que serão úteis eventualmente: 
+
+\begin{mydef}
+	Seja $X$ um conjunto com uma rede  $(x_{\delta })$ e $S\subset X$. Dizemos que:\\
+	
+	i) $S$ é uma \textbf{cauda} da rede se for da forma $\{ x_{\delta } : \delta_0 \preccurlyeq \delta \}$ para algum $\delta_0 \in \mathbb{D}$. \
+	
+	ii) $S$ é \textbf{eventual} se contém alguma cauda.\
+	
+	iii) $S$ é \textbf{cofinal} se para cada $\delta_0 \in \mathbb{D}$ existe  $\delta$ tal que $ \delta_0 \preccurlyeq \delta$ e $x_\delta \in S$. Também se diz que $S$ é frequente.
+	
+\end{mydef}
+
+O próximo passo é definir um conceito bastante usado em diversas áreas da matemática: o filtro. Tal conceito pode ser descrito em termos de uma ordem parcial (como um conjunto parcialmente ordenado, direcionado para baixo e fechado para cima, ou seja, dado um elemento do filtro, se tem outro elemento acima dele, ele também está no filtro) ou então diretamente na linguagem de conjuntos (uma vez que a relação ``é subconjunto de'' é uma ordem parcial). Neste texto usaremos a segunda versão, a qual consiste em: 
+
+\begin{mydef}
+	Seja $\mathcal{F}$ uma família não vazia de subconjuntos de $X$. Dizemos que ela é um \textbf{filtro} se:\\
+	
+	i) $\emptyset \notin \mathcal{F}$. \
+	
+	ii) se $A,B \in \mathcal{F}$, então $A\cap B\in \mathcal{F}$. \
+	
+	iii) Se $A \in \mathcal{F}$ e $A\subset B$, então $B\in \mathcal{F}$\
+	
+	Além disso, dizemos que uma família $\mathcal{B}$ não vazia é uma \textbf{base} (de filtro) se:\	
+	
+	a) $\emptyset \notin \mathcal{B}$.\
+	
+	b) a intersecção de quaisquer dois subconjuntos de $\mathcal{B}$ contém algum elemento de $\mathcal{B}$. \
+	
+	E tal conjunto irá gerar o filtro $\mathcal{F}$ se ele é o menor (com relação à inclusão) filtro contendo a base.
+	
+\end{mydef}
+
+É interessante observar que esta noção de base de filtro é bem parecida com a de base de espaço vetorial e topologia, principalmente da forma como é feito o conjunto gerado. Com esta definição podemos estabelecer relações entre filtros e redes: a família dos subconjuntos que são caudas de uma rede é uma base que gera o filtro formado pela família dos subconjuntos eventuais desta rede, o qual chamaremos de \textbf{filtro eventual} da rede (e sua base será a \textbf{base de caudas da rede}). 
+
+Uma questão que pode e deve surgir é: dado um filtro $\mathcal{F}$ em $X$, é possível construir uma rede tal que este filtro seja eventual nela? De fato, não só existe esta rede e ela é construtível, como há várias; há, até mesmo, uma forma canônica de se descrever esta rede a partir de uma construção explícita, porém isto requer mais conceitos dos que foram definidos e não é algo necessário para os fins deste texto, no máximo usa-se o fato de tal rede existir, para mais detalhes, a construção é feita em [9]. Esta relação é importante, uma vez que o ``conjunto'' de todas as redes de $X$ na verdade não é um conjunto, e sim uma classe própria (informalmente, é algo muito grande para ser um conjunto), enquanto o conjunto de todos os filtros é, de fato, um conjunto (que é subconjunto das partes do conjunto das partes de $X$). Além disso há casos em que é mais vantajoso enxergar a convergência em termos de filtros, enquanto que em outros, em termos de redes; isto soa bem familiar considerando o análogo disso no contexto de espaços métricos, em que é vantajoso considerar ora a convergência em termos de sequências ora em termos de um conjunto de bolas abertas contendo um ponto (que dá origem às vizinhanças, que formam nada menos que um filtro).
+
+Agora será feita a generalização do conceito de subsequência, introduzindo o que se chama de sub-redes. Existem, na verdade, diversas definições diferentes de sub-redes, cada uma com certo grau de generalidade. Neste texto, será feita aquela que não só dá o maior grau de generalidade, como também se apresenta de maneira mais natural quando se enxerga a relação entre redes e filtros e, com isso, facilitando que se intercalem as duas estruturas, fazendo com que possam ser aproveitadas as vantagem dos dois sistemas no estudo da convergência. 
+
+\begin{mydef}
+	Sejam $(x_\alpha )_{\alpha \in \mathbb{A}}$ e $(y_\beta )_{\beta \in \mathbb{B}}$ redes em $X$ com filtros eventuais  $\mathcal{F}$ e  $\mathcal{G}$ respectivamente. Dizemos que a segunda é \textbf{sub-rede} da primeira se uma dentre as seguintes condições é satisfeita: \
+	
+	i) Todo subconjunto de $X$ que é cofinal para $(y_\beta )$ também é cofinal para $(x_\alpha )$.\
+	
+	ii) Todo subconjunto de $X$ que é eventual para $(x_\alpha )$ também é eventual para $(y_\beta )$.\
+	
+	iii) $\mathcal{F} \subset \mathcal{G}$.\
+	
+	iv) Todo subconjunto de $X$ que é cauda de $(x_\alpha )$ contém uma cauda de $(y_\beta )$.\
+	
+	v) para cada conjunto eventual $ \mathbb{S} \subset  \mathbb{A}$, o conjunto $y^{-1}(x( \mathbb{S}))$ é eventual em $ \mathbb{B}$.
+	 
+	
+\end{mydef}
+
+Vale notar que cada um dos itens da definição anterior são equivalentes. Temos também que em (iii) fica claro o quanto o uso de filtros pode facilitar a descrição sub-redes, já que isto corresponde ao conceito de superfiltro. Também chamamos duas redes de \textbf{equivalentes} caso cada uma seja sub-rede da outra, ou seja, caso possuam o mesmo filtro eventual. Esta correspondência também dá origem à seguinte:\\
+
+\begin{mydef}
+	Seja $(x_\delta )$ uma rede em $X$ com a seguinte propriedade: se $S\subset X$, então eventualmente $x_\delta \in S$ ou $x_\delta \in X\setminus S$. Dizemos que  $(x_\delta )$ é uma \textbf{rede universal} ou \textbf{ultra-rede}.
+	
+\end{mydef}
+
+A segunda nomenclatura faz sentido quando se observa que o filtro eventual de uma rede universal é um ultrafiltro, ou seja, um filtro maximal, isto é, se um superconjunto de um ultrafiltro é um filtro, então eles são o mesmo conjunto. Como a teoria de redes universais equivalentes pode ser reescrita como a teoria de ultra-filtros, temos o seguinte:
+
+\begin{thrm}
+ 	Toda rede possui uma sub-rede universal.  	
+\end{thrm}
+ 
+
+O qual é consequência imediata de um teorema análogo sobre a existência ultrafiltros. É bom observar que esta sub-rede universal é (a princípio) intangível, uma vez que necessita ou do Axioma da Escolha ou do Princípio do Ultra-filtro (que afirma existirem ultra-filtros não necessariamente principais, ou seja, não necessariamente da forma $\{x: a\preceq x\}$ para algum $a$), ambos são não construtíveis, apesar de não serem equivalentes: o Axioma da Escolha implica no Princípio do Ultra-filtro (a demonstração é uma aplicação padrão do Lema de Zorn), porém a recíproca não vale. Esta questão é discutida com uma imensidão de detalhes em [10]. 
+
+Antes de definir o que é convergência neste contexto, é interessante observar que as redes e sub-redes obedecem várias propriedades na topologia geral de forma análoga às sequências e subsequências na teoria dos espaços métricos, por exemplo, temos que num espaço métrico um conjunto é compacto se e só se toda sequência nele tem uma subsequência convergente; aqui temos o análogo disso que vale para quaisquer espaços topológicos: um conjunto é compacto se e só se toda rede possui uma sub-rede convergente. Isto ocorre porque uma topologia pode ser definida a partir de filtros convergentes que serão sistemas fundamentais de vizinhanças. E já que foi falado em convergência de rede, definiremos a mesma da seguinte forma: 
+
+\begin{mydef}
+
+Um espaço de convergência é um conjunto $X$ equipado com uma função: 
+
+$$\lim : \{\textit{filtros em } X\}\rightarrow \wp (X).$$	
+	
+\end{mydef}
+  
+A princípio qualquer função pode ser utilizada para ser um ``limite'' num espaço de convergência, porém, normalmente, a escolha dela será determinada por alguma estrutura em $X$ que existe previamente, como uma topologia (neste caso, iremos querer uma definição de convergência que seja compatível com a topologia, ou seja, a topologia que será dada pelos sistemas de vizinhanças deverá coincidir com aquela que já existe no espaço), uma ordem, uma medida, etc. É bom fazer uma extensão importante nesta função de limite que poderá facilitar alguns casos: se $\mathcal{B}$ é uma base para o filtro  $\mathcal{F}$, então $\lim \mathcal{B}=\lim \mathcal{F}$. 
+
+O interesse aqui será reescrever esta definição usando a linguagem das redes, porém já se cai num problema, pois, se apenas forem trocados os termos ``filtros'' por ``redes'', o limite deixa de ser função, pois o conjunto de todas as redes em $X$ não é, na verdade, um conjunto, e sim uma classe própria, conforme já observado. Como desta definição de limite é esperado que $\lim (x_\alpha)=\lim \mathcal{F}$ sendo $\mathcal{F}$ o filtro eventual de $(x_\alpha)$, podemos considerar o conjunto $\mathcal{E} = \{\textit{{redes em }} X\} / \sim$ em que $\sim$ é a equivalência de redes, ou seja:
+
+$$\lim :\mathcal{E} \rightarrow \wp (X).$$
+
+
+Um outro exemplo de propriedade que se generaliza com as redes é a caracterização da continuidade. Para espaços métricos, é possível caracterizar uma função contínua como sendo aquela que preserva o limite de sequências, porém isto passa a não valer mais no caso de espaços topológicos. Para ser preciso: se o contra-domínio da função não tiver base local enumerável, a caracterização não vale mais. No entanto, refazendo esta caracterização na linguagem de redes e filtros ela passa a valer novamente. 
+
+A seguir são definidas algumas propriedades que comumente ocorrem em espaços de convergência que são de interesse:
+
+\begin{mydef} \ \\
+	
+a) Um espaço de convergência é \textbf{centrado} se, dado um ultrafiltro $\mathcal{U}_z$ fixo em $z$ (ou seja, z é seu menor elemento) então $\lim \mathcal{U}_z = z$. Ou, equivalentemente, se $(x_\alpha )$ é uma rede tal que $x_\alpha=z$ eventualmente então $\lim x_\alpha = z$. \
+
+b) Um espaço de convergência é \textbf{isótono} se, dado um filtro $\mathcal{F}$ com um superfiltro $\mathcal{G}$ e tal que $\lim \mathcal{F} = z$, então $\lim \mathcal{G} = z$. Ou, equivalentemente, se $(x_\alpha )$ é uma rede com sub-rede $(y_\beta )$ e $\lim x_\alpha = z$ então $\lim y_\beta = z$. 
+	
+\end{mydef}
+
+Tais propriedades são normalmente esperadas, já que claramente são satisfeitas pelo conceito usual de convergência em espaços métricos. Neste contexto também é possível dizer que um espaço de convergência é \textbf{Hausdorff} caso os elementos da imagem de $\lim$ sejam conjuntos com, no máximo, um elemento e isto tem relação com axiomas de separação na topologia. 
+
+O mais importante é notar que toda a teoria de convergência pode ser feita sem uma topologia (ao contrário do que geralmente é feito em cursos de análise, em que a topologia do espaço, que geralmente é métrico, define a convergência ou mesmo em casos de espaços topológicos, em que ainda é possível realizar esta definição) e não só isso: a própria teoria de convergência dará origem a uma topologia se algumas condições forem satisfeitas. Isto ocorrerá caso os filtros que convergem para conjuntos não vazios conterem sempre o valor para o qual convergem (ou seja, todo elemento do filtro contém o conjunto de convergência) e a união da imagem do limite ser igual ao conjunto $X$. Desta forma, tais filtros convergentes darão, para cada elemento do espaço, um conjunto fundamental de vizinhanças, o qual dá origem a uma topologia. O inverso também ocorre, ou seja, dada uma topologia, há uma escolha natural de filtros convergentes, ou seja, dizemos que o ponto $x$ pertence à imagem de um filtro pela função limite se este filtro é um sistema de vizinhanças de $x$. Uma exposição mais detalhada sobre este assunto pode ser encontrada em [2; 1.6].
+
+
+\section{A Integral de Riemann e como generalizá-la através de calibres}
+
+Como o objetivo deste trabalho é estudar propriedades de uma integral generalizada, é bom deixar claro que a generalização descrita na seção anterior não é algo necessário para generalizar a integral de Riemann, porém ela permitirá uma escrita mais compacta desta definição, além de facilitar algumas demonstrações, sem falar na vantagem do ponto de vista conceitual de poder definir a integral explicitamente como o resultado de uma convergência. Novamente seguiremos, em linhas gerais, o que foi feito em [9]. Primeiramente define-se:
+
+\begin{mydef}
+	
+Seja $f:[a,b]\rightarrow X$ uma função limitada e $I\in X$. Dizemos que $I$ é a \textbf{Integral de Riemann} de $f$ sobre $[a,b]$ se, para todo $\varepsilon >0$, existe $\delta >0$ tal que: Se $n\in \mathbb{N}$ e $a=t_0\leq t_1\leq ... \leq t_n=b$ e $\tau_j\in [t_{j-1},t_j ]$ com $t_j-t_{j-1}<\delta$ para todo $j$, então $\left| I-\sum_{j=1}^n (t_j-t_{j-1})f(\tau_j)\right|< \varepsilon$. 
+	
+\end{mydef}
+
+Quando tal integral existe dizemos que $f$ é Riemann-integrável em $[a,b]$ e $I=\int_a^b f(x) \text{d} x$. Geralmente $X=\mathbb{R}$, porém pode ser qualquer espaço normado completo (ou seja, um espaço de Banach). Caso $X$, além de ser completo no sentido de Cauchy, seja também ordenado e arquimediano, é possível reescrever esta definição usando a linguagem de supremo e ínfimo, o que dá origem à integral de Darboux, que é equivalente à de Riemann neste caso. Tal definição é bastante apresentada em livros de cálculo e análise, pois traz algumas facilidades que o autor do material pode preferir.
+
+Escreveremos a definição apresentada numa notação mais compacta e que, ao mesmo tempo, permita generalizações. Neste texto, duas delas serão tratadas: a primeira é a Integral de Stieltjes e a segunda a de Henstock. É interessante observar que a primeira surge naturalmente no estudo de probabilidade em que funções de distribuição de variáveis aleatórias podem ser claramente apresentadas, porém não podem ser expressadas numa integral de Riemann, daí se usa a integral de Lebesgue-Stieltjes, que abrange qualquer caso nesta teoria. A segunda surge da necessidade de se integrar funções que possuem singularidades, que fazem com que elas não sejam integráveis absolutamente. 
+ 
+Como a sentença de \textbf{2.1} é relativamente grande, teremos as seguintes definições para abreviar alguns dos termos:
+
+\begin{mydef}
+
+Uma \textbf{partição} do intervalo $[a,b]$ de tamanho $n$ $\delta$-fina , simbolizada por $T=(n,t_i,\tau_i,\delta )$, contém os elementos $a=t_0\leq t_1\leq ... \leq t_n=b$ e $\tau_j\in [t_{j-1},t_j ]$ com $t_j-t_{j-1}<\delta$ para todo $j$. Além disso, definimos como a \textbf{soma aproximada de Riemann} correspondente a $T$ da função $f$ o seguinte:
+
+$$\Sigma [f,T]=\sum_{j=1}^n (t_j-t_{j-1})f(\tau_j).$$
+
+\end{mydef}
+
+Desta forma ficamos com \textbf{2.1} bastante simplificada comparada com sua forma inicial:  $f:[a,b]\rightarrow X$ é integrável e sua integral é $I$ se, para todo $\varepsilon >0$, existe $\delta >0$ tal que, para toda partição $T$ $\delta$-fina de $[a,b]$, temos que  $\left| I-\Sigma [f,T] \right| < \varepsilon$. Porém, mesmo simplificada, esta sentença ainda pode parecer complicada perto da maioria das definições matemáticas, já que possui, por exemplo, 3 quantificadores. Ocorre que ela pode ser vista de maneira bastante natural como o limite de uma rede. Para isto, notamos que o conjunto $$\mathcal{D}=\{\ (T,\delta): \delta \textit{ é positivo e } T  \textit{ é uma partição } \delta \textit{ fina de } [a,b] \}$$ trata-se de um conjunto direcionado pela ordem $\preccurlyeq$ em que $(T_1,\delta_1)\preccurlyeq (T_2,\delta_2)$ se $\delta_2\leq \delta_1$, logo ele servirá como índice de redes formadas por somas aproximadas de Riemann, ou seja: $(\Sigma [f,T])_{(T,\delta)\in \mathcal{D}}$. Falta apenas definir quando esta rede converge e para isto usaremos a seguinte:
+
+\begin{mydef}
+	
+Seja $(x_\alpha)$, $\alpha \in \mathbb{A}$, uma rede em um espaço métrico $X$. Dizemos que ela é de Cauchy se, para todo  $\varepsilon >0$, existe $\gamma \in \mathbb{A}$ tal que se $\gamma \preccurlyeq \alpha , \beta $ então $d (x_\alpha , x_\beta)<\varepsilon$. Esta definição pode ser analogamente formulada usando filtros.
+	
+\end{mydef}
+
+Sendo assim, como $X$ é um espaço normado completo, definimos a convergência de redes para o caso em que elas são de Cauchy, caso contrário, a função $\lim$ leva a rede para o conjunto vazio. Resta apenas definir explicitamente como se extrai um valor para este limite, sendo que seria esperado que $I=\lim (\Sigma [f,T])_{(T,\delta)}$, já que, caso isto aconteça, atinge-se o objetivo de construir um ferramental teórico capaz de escrever numa sentença a definição de integral de Riemann e que ainda permitirá generalizações. Sendo assim, temos a seguinte definição: 
+
+\begin{mydef}
+	
+Seja $(x_\alpha)$, $\alpha \in \mathbb{A}$, uma rede em um espaço métrico $X$ e $x\in X$. Dizemos que $\lim x_\alpha =x$ se existe uma rede de Cauchy $y_\beta$ tal que $(x)$ (a rede constante formada por $x$) e $(x_\alpha)$ são sub-redes dela. Equivalentemente, se, para todo $\varepsilon >0$, existe $\gamma \in \mathbb{A}$ tal que se $\gamma \preccurlyeq \alpha$ então $d (x_\alpha , x)<\varepsilon$.
+	
+\end{mydef}
+
+A qual satisfaz o esperado quando o limite não é o conjunto vazio, sendo que podemos ainda observar que ela também forma um espaço de convergência de limite único (Hausdorff), centrado e isótono. Sendo assim, será feita a primeira generalização, que consiste em definir a integral de Henstock. A única modificação feita é que, em vez de $\delta$ ser uma constante positiva, ela será uma função positiva (chamada de função \textbf{calibre}, tradução livre do termo ``gauge'') com o mesmo domínio de $f$ exigindo-se que $t_{j}-t_{j-1}< \delta (\tau_i)$ para que a partição $T$ seja, neste contexto, $\delta$-fina. 
+
+
+Uma observação importante é que na teoria de integração de Riemann usual utiliza-se o fato de que todo intervalo possui uma partição $\delta$-fina para todo $\delta>0$. Isto não se generaliza trivialmente quando $\delta$ passa a ser um calibre, já que o valor assumido dependerá de um valor $\tau_i$ e não é simples encontrar estes números na hora de achar uma partição, porém, ``por sorte'', há uma prova indireta (não-construtiva) bem simples que assegura este resultado:
+
+\begin{prop}
+	
+	Dado um calibre $\delta:[a,b]\rightarrow \mathbb{R}$, existe uma partição $\delta$-fina de $[a,b]$.
+ 
+\end{prop}
+
+\dem Seja $S=\{ s\in [a,b]: \textit{ existe uma partição } \delta \textit{-fina de } [a,s] \}$, queremos mostrar que $b\in S$. Triviamente $S\neq \emptyset$, pois $a\in S$, logo tal conjunto possui supremo, já que claramente é limitado superiormente, logo seja $\sigma = \sup S$. Podemos observar que existe $s\in S$ tal que $s>\sigma-\delta (\sigma)$, logo qualquer partição de $[a,s]$ pode ser estendida para $[a,\sigma ]$ colocando o intervalo $[s,\sigma]$ e avaliando $\delta$ em $\sigma$, logo $\sigma \in S$. Supondo que $\sigma<b$, podemos conseguir, com o mesmo argumento anterior, uma nova partição para $[a,\sigma ']$ com $\sigma <\sigma ' \leq b$, o que contraria a maximalidade de $\sigma$, portanto $b\in S$. \eop \\
+
+A ordem $\preccurlyeq$ passa a ser tal que $(T_1,\delta_1)\preccurlyeq (T_2,\delta_2)$ se $\max_{i\leq n_2} \delta_2(\tau^2_i)\leq \max_{j\leq n_1} \delta_1(\tau^1_j)$. Sendo assim, usando esta nova definição, temos que $I$ será a \textbf{Integral de Henstock} se $I=\lim ( \Sigma [f,T])_{(T,\delta)\in \mathcal{D}'}$, sendo:
+
+$$\mathcal{D'}=\{\ (T,\delta): \delta \textit{ é uma função calibre e } T  \textit{ é uma partição } \delta \textit{ fina de } [a,b] \}.$$
+
+A segunda generalização consiste em definir a Integral de Stieltjes: seja $\varphi$ uma função com o mesmo domínio de $f$, definimos a \textbf{soma aproximada de Riemann-Stieltjes} por:
+
+$$\Sigma [f,T,\varphi]=\sum_{j=1}^n (\varphi(t_j)-\varphi(t_{j-1}))f(\tau_j).$$
+
+Assim a \textbf{Integral de Riemann-Stieltjes} consiste em trocar, na definição, as somas aproximadas de Riemann por somas aproximadas de Riemann Stieltjes. Unindo as duas generalizações, temos a \textbf{Integral de Henstock-Stieltjes} definida por $I=\lim ( \Sigma [f,T,\varphi])_{(T,\delta)\in \mathcal{D}'}$. Utilizaremos a seguinte notação para a integral de Henstock-Stieltjes e Henstock respectivamente: 
+
+$$\int_a^b f(t) \textit{d}\varphi(t) =\lim ( \Sigma [f,T,\varphi])_{(T,\delta)\in \mathcal{D}'}, $$
+
+$$\int_a^b f(t) \textit{d}t =\lim ( \Sigma [f,T])_{(T,\delta)\in \mathcal{D'}}. $$
+
+O que é compatível com o fato de que as duas integrais são a mesma quando $\varphi$ é a função identidade. Para que a notação fique menos carregada, eventualmente usaremos $$\int_a^b f \textit{d}\varphi \ , \ \int_a^b f $$ para as integrais de Henstock-Stieltjes e Henstock respectivamente.  
+
+\section{Integrais Henstock-Stieltjes como generalizações de Riemann e Lebesgue}
+
+A primeira propriedade que precisa ser verificada é que a integral de Henstock-Stieltjes de fato é uma generalização da integral de Riemann. Isso será feito encontrando uma função que não é Riemann integrável, porém é Henstock integrável. Daremos um outro exemplo adiante que também servirá, porém o seguinte é um caso bastante comum e explorado em livros texto de análise: a função de Dirichlet, ou seja, $\mathbbm{1}_{\mathbb{Q}}$, geralmente restrita a algum intervalo fechado, sendo $\mathbbm{1} _A$ a função característica de $A$ (também conhecida como função indicadora, nome usado principalmente em livros de probabilidade). Isto pode ser verificado da seguinte forma: é necessário checar se existe $\int_0^1\mathbbm{1}_{\mathbb{Q}} (x)  \text{d}x $ no sentido de Riemann, para isto, basta observar que, para toda partição $\delta$-fina, haverá casos em que todo $\tau_i$ é racional (que será chamado de $T_\delta$) e, neste caso, a soma aproximada de Riemann é $1$ e casos em que é irracional e a soma é zero (neste caso será $T'_\delta$). Ora, para todo valor de $\delta$ teremos que $1=| \Sigma [\mathbbm{1}_{\mathbb{Q}},T_\delta ]- \Sigma [\mathbbm{1}_{\mathbb{Q}},T'_\delta ]| $, portanto a rede $ ( \Sigma [\mathbbm{1}_{\mathbb{Q}},T])_{(T,\delta)\in \mathcal{D}}$ não é de Cauchy (caso fosse, deveria ser sempre menor que $\varepsilon$ positivo dado a partir de algum $\delta$ dependendo dele), logo ela não converge para um limite. 
+
+Agora tentaremos integrar esta função no sentido de Henstock: tome a seguinte função calibre: $\delta(x)=\varepsilon$ se $x\notin \mathbb{Q}$ e $\delta (x)=2^{-i} \varepsilon$ se $x=r_i$ em que $(r_i)_{i\in \mathbb{N}}$ uma enumeração de $[0,1]\cap \mathbb{Q}$. Note agora que a soma para qualquer partição $\delta$-fina pode ser separada para valores racionais ou irracionais de $\tau_i$, sendo que os irracionais são zero, bastando considerar apenas a parte racional da soma, porém notamos que esta soma é sempre menor que a soma feita sobre todos os racionais $r_i$, entretanto notamos que esta soma infinita resulta em $\varepsilon$, portanto a integral existe e é zero. Para que fique claro: 
+
+$$\left| \sum_{i=1}^n f(\tau_i)(t_{i-1}-t_{i}) -0\right| = \sum_{i|\tau_i\in\mathbb{Q}}(t_{i-1}-t_{i})<\sum_{j=1}^{\infty} \delta (r_j)=\sum_{j=1}^{\infty}2^{-i}\varepsilon=\varepsilon.$$
+
+Para concluir a demonstração, basta observar que toda função Riemann integrável também é Henstock integrável e as integrais possuem o mesmo valor, o que é trivial, uma vez que dado que a função pode ser integrada no sentido de Riemann, basta tomar uma função calibre constante. 
+
+Um fato mais surpreendente é que a integral de Henstock não só generaliza Riemann como também generaliza a integral de Lebesgue. Por um lado não é difícil checar este fato: basta encontrar uma função que não é integrável no sentido de Lebesgue e mostrar que ela passa a ser por Henstock. Enquanto achar esta função é uma tarefa relativamente simples, apesar de que demonstrar sua integrabilidade por Henstock não é trivial, a parte mais complicada é provar que toda função integrável por Lebesgue também será por Henstock e que ambas as integrais fornecem o mesmo valor. 
+
+Considere a seguinte função $f:[0,1]\rightarrow \mathbb{R}$ tal que:  
+
+$$ f(x) = \left\{
+\begin{array}{ll}
+x^2\cos \left(\frac{\pi}{x^2}\right)  & \mbox{se } 0 < x \leq 1 \\
+0 & \mbox{se } x=0
+\end{array}
+\right. $$
+
+Tal função é diferenciável em todo domínio e possui a seguinte derivada, na qual estaremos mais interessados:
+
+$$ f'(x) = \left\{
+\begin{array}{ll}
+2x\cos \left(\frac{\pi}{x^2}\right) +\frac{2\pi}{x}\sin \left(\frac{\pi}{x^2}\right)   & \mbox{se } 0 < x \leq 1 \\
+0 & \mbox{se } x=0
+\end{array}
+\right. $$
+
+Podemos observar imediatamente que ela não é integrável por Riemann, uma vez que não é limitada. Queremos mostrar que ela não é também integrável por Lebesgue. Se $0<a<b<1$, tal função em $[a,b]$ é contínua e, portanto, integrável por Riemann e vale o seguinte: $$\int_a^b f'=b^2\cos \left(\frac{\pi}{b^2}\right) - a^2\cos \left(\frac{\pi}{a^2}\right).$$ Com isso podemos definir sequências $b_k=1/\sqrt{2k}$ e $a_k=\sqrt{2/(4k+1)}$. Notamos que $\int_{a_k}^{b_k} f'=1/2k$. Como os intervalos $[a_k,b_k]$ são disjuntos segue que: $$\int_0^1 |f'|\geq \sum_{k=1}^{\infty} \int_{a_k}^{b_k} |f'|\geq  \sum_{k=1}^{\infty} \frac{1}{2k}=\infty.$$ Portanto $f'$ não é absolutamente integrável e, desta forma, não integrável por Lebesgue (a demonstração de que integrabilidade por Lebesgue ocorre se há integrabilidade absoluta pode ser encontrada em [4] e [5]). Resta mostrar que ela é integrável por Henstock, o que de fato ocorre e seu valor é $-1$, já que podemos aplicar uma do Teorema Fundamental do Cálculo sem as restrições normalmente aplicáveis. Para mostrar este fato usaremos o seguinte:
+
+\begin{thrm}
+	
+	Sejam $f$ e $\varphi$ duas funções definidas no intervalo $[a,b]$ assumindo valores reais. Suponha que a segunda é contínua e derivável exceto num conjunto no máximo enumerável de pontos. Logo a integral de Henstock-Stieltjes $$\int_a^b f(t) \text{d}\varphi (t)$$ existe se, e somente se, a integral de Henstock $$\int_a^b f(t)\varphi' (t) \text{d}t$$ existe, sendo que as duas são iguais.
+	
+\end{thrm}
+
+O qual provê o seguinte: 
+
+\begin{cor}
+	
+	Seja $G$ definida no intervalo $[a,b]$ e suponha $\varphi$ tal qual no teorema anterior sendo $\varphi '=G$ exceto onde não está definida. Logo $G$ é integrável por Henstock e $$\int_a^b G(t) \text{d}t=\varphi(b)-\varphi(a).$$ 
+	
+\end{cor}
+
+\dem Aplique \textbf{3.1} para $f$ constante igual a $1$. \eop  \\
+
+Ou seja, aplicando esta forma do Teorema Fundamental do Cálculo para integrais de Henstock em $f'$ definida anteriormente temos que $\int_0^1 f'=-1$, isto conclui a verificação de que existem funções que não são integráveis por Lebesgue, porém são por Henstock. Antes de mostrar o outro lado daquilo que queremos, ou seja, que integrais de Lebesgue e Henstock coincidem quando a primeira existe, devemos demonstrar \textbf{3.1} e, para isso, precisaremos do seguinte: 
+
+\begin{lem}
+	
+	Se $f$ é uma função diferenciável no número real $t_0$, então $(f(u)-f(v))/(u-v)\rightarrow f'(t_0)$ se $v\rightarrow t_0^{+}$ e $u\rightarrow t_0^{-}$, ou seja, aquela razão se aproxima de $f'(t_0)$ se $u$ e $v$ se aproximam de $t_0$ por lados opostos. Mais formalmente temos o seguinte: Seja $\delta$ um número positivo e $X_\delta$ o conjunto de triplas $(t_0,u,v)$ tais que $t_0-\delta\leq u\leq t_0 \leq v \leq t_0 +\delta$ e $u\neq v$, o lema afirma que: $$\lim_{\delta\rightarrow 0^{+}} \sup_{X_\delta} \left| \frac{f(u)-f(v)}{u-v} - f'(t_0) \right|=0.$$
+	
+\end{lem}
+
+\dem Pela definição de derivada, o seguinte é satisfeito: $f(t)-f(t_0)-f'(t_0)(t-t_0)=(t-t_0)E(t)$ sendo que $E(t)\rightarrow 0$ se $t\rightarrow t_0$, em particular temos que: $$f(u)-f(t_0)-f'(t_0)(u-t_0)=(u-t_0)E(u),$$ $$f(v)-f(t_0)-f'(t_0)(v-t_0)=(v-t_0)E(v).$$ Subtraindo uma equação da outra e dividindo por $u-v$ temos: $$\frac{f(u)-f(v)}{u-v} - f'(t_0) = \frac{u-t_0}{u-v}E(u)+\frac{t_0-v}{u-v}E(v).$$ Note que:
+
+$$ \begin{array}{lll}
+	 \displaystyle\left |\displaystyle\frac{u-t_0}{u-v}E(u)+\displaystyle\frac{t_0-v}{u-v}E(v)\displaystyle\right|  & = &    |(u-t_0)E(u)+(t_0-v)E(v)| /(u-v)  \\
+	\ & < & (((u-t_0)+(t_0-v))\max \{ \varepsilon_u,\varepsilon_v \})/(u-v) \\
+	\ & = & \max \{ \varepsilon_u,\varepsilon_v \}=:\delta.
+\end{array} $$ 
+
+O que termina a demonstração, pois $|E(u)|<\varepsilon_u$ e $|E(v)|<\varepsilon_v$, em outras palavras, tomando $\delta$ igual a $ \max \{ \varepsilon_u,\varepsilon_v \}$, que é arbitrário, temos que, dadas as condições de $t_0-\delta\leq u\leq t_0 \leq v \leq t_0 +\delta$ e $u\neq v$, $\left |\frac{u-t_0}{u-v}E(u)+\frac{t_0-v}{u-v}E(v)\right|$ é menor que $\delta$, porém isto é igual a $\left|\frac{f(u)-f(v)}{u-v} - f'(t_0)\right|$. \eop \\
+
+Com isso podemos provar \textbf{3.1} e concluir esta parte: \\
+
+\textit{Demonstração (de 3.1)}: Queremos mostrar que se uma das redes $\Sigma [f,T,\varphi]$, $\Sigma [fG,T]$ (sendo G definida conforme 3.2) converge, então a outra também converge para o mesmo limite. Assim, é suficiente mostrar que rede $$\left| \Sigma [f,T,\varphi] - \Sigma [fG,T] \right|$$ converge para zero. Seja $S$ o conjunto dos pontos em que $\varphi '$ não coincide com $G$ e seja $\varepsilon > 0$ dado. Defina o calibre $\delta$ em $S$ e em $[a,b]\setminus S$ separadamente da seguinte forma: 
+
+Se $\sigma_k\in S$ com $k\in\mathbb{N}$ escolhemos $\delta(\sigma_k)>0$ pequeno o suficiente tal que se $$t_1,t_2\in [\sigma_k-\delta(\sigma_k),\sigma_k+\delta(\sigma_k)]\cap [a,b]$$ então $$|f(\sigma_k)|\left( |\varphi(t_1)-\varphi(t_2)|+|G(\sigma_k)|(t_1+t_2) \right)<2^{-k-2}\varepsilon. $$
+
+Isso pode ser feito uma vez que $|f(\sigma_k)|$ e $|G(\sigma_k)|$ são números finitos e $\varphi$ é contínua.
+
+Se $\tau\in [a,b]\setminus S$, por \textbf{3.3} existe um número $\delta(\tau)>0$ tal que se $$u,v\in [\tau-\delta(\tau), \tau+\delta(\tau)]\cap [a,b], \ u\leq \tau \leq v, \ u\neq v$$ então $$|f(\tau)|\left| \frac{\varphi(u)-\varphi(v)}{u-v} - G(\tau) \right|< \frac{\varepsilon}{2(b-a)}. $$
+
+Ou seja, isto nos dá um calibre $\delta:[a,b]\rightarrow (0,\infty)$. Seja $T$ uma partição $\delta$-fina de [a,b], mostraremos que $\left| \Sigma [f,T,\varphi] - \Sigma [fG,T] \right|<\varepsilon$. Desconsiderando casos degenerados de partições em que $t_i=t_{i+1}$, podemos assumir que $t_i<t_{i+1}$ e definir $$\lambda_j=|f(\tau_j)(\varphi(t_j)-\varphi(t_{j-1})) - f(\tau_j)G(\tau_j)(t_j-t_{j-1})|,$$ logo $$\left| \Sigma [f,T,\varphi] - \Sigma [fG,T] \right| \leq \sum_{j=1}^n \lambda_j.$$ Faremos a estimativa de $\lambda_j$ dividindo em dois casos: em que $\tau\in S$ e em que $\tau\in [a,b]\setminus S$. No primeiro temos que $\tau_j=\sigma_k$ para algum $k$, logo $\lambda < 2^{-k-2}\varepsilon$ , como $\sigma_k$ pode parecer no máximo duas vezes nos valores $\tau_j$ da partição (pois não temos intervalos degenerados), portanto a soma destes valores de $\lambda_j$ será menor que $2\sum_{k=1}^{\infty}  2^{-k-2}\varepsilon=\frac{1}{2} \varepsilon$. No segundo temos que $\lambda_j< (t_j-t_{j-1})\varepsilon / 2(b-a)$, tal soma será menor que $\varepsilon / 2$ novamente, ou seja, provamos que: 
+
+$$ \begin{array}{lll}
+
+\displaystyle \sum_{j=1}^n \lambda_j  & < & 2\displaystyle\sum_{k=1}^{\infty}  2^{-k-2}\varepsilon + \displaystyle\sum_{i|\tau_i\notin S}\displaystyle\frac{(t_i-t_{i-1})\varepsilon}{2(b-a)} \\
+
+\ & = & \displaystyle\frac{\varepsilon}{2}+ \displaystyle\sum_{i|\tau_i\notin S}\displaystyle\frac{(t_i-t_{i-1})\varepsilon}{2(b-a)}<\displaystyle\frac{\varepsilon}{2}+\frac{\varepsilon}{2} = \varepsilon. \\
+ 
+\end{array} $$ 
+
+Isto conclui a demonstração. \eop \\
+
+Podemos observar que todas as demonstrações feitas poderiam ser reescritas exatamente da mesma maneira para integrais em funções com domínio real e valores num espaço vetorial normado qualquer, tomando o cuidado de que a função $\varphi$ ainda assumiria valores reais. 
+
+Também podemos concluir que não é possível que aconteça conforme em \textbf{3.2} para casos mais gerais se não tomarmos certos cuidados. Por exemplo, apenas supondo que o conjunto de pontos onde a derivada não está definida tem medida nula, o resultado não vale mais, já que a função Escada de Cantor fornece um contra-exemplo: ela possui derivada nula exceto em um conjunto de medida nula, logo a integral de sua derivada é zero, porém a diferença dos valores na primitiva é igual a 1. Esta função é construída em [3 ; p. 96]. Porém ainda é possível melhorar este teorema, inclusive supondo que a primitiva não tem derivada (ou tem, porém é diferente da função a ser integrada) num conjunto de medida nula, mas é preciso de uma hipótese adicional. Isto, conforme será visto posteriormente, nos dará uma condição necessária e suficiente para a integração de Henstock.
+
+Agora provaremos que toda função integrável por Lebesgue também é por Henstock. A integral de Lebesgue de uma função é definida primeiramente para funções simples (tipo escada) usando a função característica e o caso geral é estendido via o Teorema da Convergência Monótona (o roteiro para esta definição pode ser encontrado em [4] e [5]), sendo assim, para provar isso, basta mostrar dois resultados para as integrais de Henstock: primeiro que, para elas, também vale uma versão do Teorema da Convergência Monótona e, em segundo lugar, provar que a integral de Henstock de uma função característica de um conjunto $X$ é igual à medida de Lebesgue de $X$. Ainda iria faltar mostrar a linearidade para as integrais de Henstock, porém isto é uma verificação trivial que é uma consequência imediata da linearidade na convergência de redes. Antes disso, porém, precisaremos de alguns lemas. O primeiro parece bem simples, porém, apesar de ser fácil de se mostrar para o caso de integrais de Riemann, não é tão trivial para o caso de Henstock-Stieltjes:  
+
+\begin{lem}
+	
+	Sejam $f$ e $\varphi$ definidas em $[a,b]$ e $c$ tal que $a<c<b$. Então $f$ é $\varphi$-integrável por Henstock-Stieltjes se e somente se a restrição de $f$ nos intervalos $[a,c]$ e $[c,b]$ também são e, com isso, temos $$\int_a^b f  \text{d}\varphi = \int_a^c f  \text{d}\varphi +\int_c^b f  \text{d}\varphi .$$ 
+	
+\end{lem}
+
+\dem Primeiro supomos que $f$ é $\varphi$-integrável em $[a,b]$ usando o critério de Cauchy, ou seja, dado $\varepsilon >0$ existe um calibre $\delta$ tal que dadas partições S e S' $\delta$-finas de $[a,b]$ então $|\Sigma[f,S,\varphi]-\Sigma[f,S',\varphi]|< \varepsilon$. Seja $\delta'$ a restrição de $\delta$ em $[a,c]$ e sejam $T$ e $T'$ duas partições de $[a,c]$ que são $\delta'$-finas. Usando \textbf{2.5} podemos estender tais partições para $[a,b]$ de forma que sejam $\delta$-finas e iguais a $S$ e $S'$ em $[c,b]$, logo $|\Sigma[f,T,\varphi]-\Sigma[f,T',\varphi]|=|\Sigma[f,S,\varphi]-\Sigma[f,S',\varphi]|< \varepsilon$, o argumento para $[c,b]$ é o mesmo.
+
+Por outro lado, suponha agora que  $f$ é $\varphi$-integrável por Henstock-Stieltjes nos intervalos $[a,c]$ e $[c,b]$, mostraremos que $\int_a^b f  \text{d}\varphi$ existe e é igual a $\int_a^c f  \text{d}\varphi +\int_c^b f  \text{d}\varphi $. Seja $\varepsilon >0$ dado. Basta mostrar que existe um calibre $\delta$ em $[a,b]$ tal que, para uma partição $S$ de $[a,b]$ que é a concatenação de partições $T$ e $T'$ de  $[a,c]$ e $[c,b]$ respectivamente, temos que $$\left| \Sigma[f,S,\varphi] - \int_a^c f \text{d}\varphi -\int_c^b f  \text{d}\varphi\right|< \varepsilon.$$
+
+Definiremos o seginte calibre: $\gamma(t)=1$ se $t=c$ e, caso contrário, $\gamma(t)=\min\{1,|1-t|\}$. Por hipótese existe um calibre $\gamma_1$ em $[a,b]$ tal que se $U$ é uma partição $\gamma_1$-fina de $J=[a,c]$ ou $J=[c,b]$ então $|\Sigma[f,U,\varphi]-\int_J f  \text{d}\varphi|<\varepsilon/2$. Desta forma, definimos o calibre $\delta$ como $\min\{\gamma_1,\gamma\}$ e provaremos que ele satisfaz a relação desejada. 
+
+Primeiramente, notamos que se $S$ é, de fato, $\delta$-fina, temos que $c=\tau_k\in [s_{k-1},s_k]$ pra algum $k$ pela forma como foi definida $\gamma$. Assim dividimos $S$ em partições $T$ e $T'$ de $[a,c]$ e $[c,b]$ respectivamente, ou seja, se: $$S \ : \ \tau_1 \in [s_0,s_1],...,q=\tau_k \in [s_{k-1},s_k],...,\tau_n\in [s_{n-1},s_n]$$ temos $$T \ : \ \tau_1 \in [s_0,s_1],...,q=\tau_k \in [s_{k-1},q]$$ e $$T' \  : q=\tau_k \in [q,s_k],...,\tau_n \in [s_{n-1},s_n].$$ 
+
+Claramente $T$ e $T'$ são $\delta$-finas e $\Sigma[f,S,\varphi]=\Sigma[f,T,\varphi]+\Sigma[f,T',\varphi]$ e, assim, temos o que queríamos. \eop \\
+
+Segue agora um lema que parece apenas um detalhe técnico para o próximo teorema, porém ele é bem importante e servirá para vários outros resultados, ele é conhecido como o Lema de Henstock-Saks: 
+
+
+\begin{lem}
+	
+	Sejam $f$ e $\varphi$ definidas em $[a,b]$ tais que a integral $\int_a^b f  \text{d}\varphi$ existe. Seja $\varepsilon>0$ e um calibre $\delta$ satisfazendo a propriedade da definição da integral, ou seja, para toda partição T $\delta$-fina temos que $|\Sigma[f,T,\varphi]-\int_a^b f  \text{d}\varphi|<\varepsilon$, então temos que: suponto que $T$ seja uma partição, não necessariamente $\delta$-fina, porém tal que $t_j-t_{j-1}<\delta(\tau_j)$ para $j\in J\subset \{ 1,2,3,...,n \}$ então $$\left| \sum_{j\in J} \left( f(\tau_j)(\varphi(t_j)-\varphi(t_{j-1}))- \int_{t_{j-1}}^{t_j} f  \text{d}\varphi\right)  \right| \leq \varepsilon. $$
+	
+\end{lem}
+
+\dem Seja $K=\{1,2,3,...,n\}\setminus J$. Considere $U$ uma partição para o intervalo $[t_{k-1},t_k]$ pra algum $k$ fixo. Sabemos que $f$ é $\varphi$-integrável em $[t_{k-1},t_k]$ pelo lema anterior e que $\Sigma[f,U,\varphi]$ tende a $\int_{t_{k-1}}^kf  \text{d}\varphi$ conforme $U$ vai ficando mais fina. Considere agora uma partição $$S \ : \ a=s_0 \leq \sigma_1 \leq s_1 \leq ... \leq s_{m-1} \leq \sigma_m \leq s_m =b$$ que seja idêntica a T em intervalos $[t_{j-1},t_j]$ em que $j\in J$, porém mais fino para intervalos $[t_{k-1},t_k]$ em que $k\in K$, assim, seja $I$ o conjunto de elementos $i$ tais que $[s_{i-1},s_i]\subset [t_{k-1},t_k]$ para cada $k\in K$, com isso temos que: $$\Sigma[f,S,\varphi]= \sum_{j\in J}f(\tau_j)(\varphi(\tau_j)-\varphi(\tau_{j-1}))+\sum_{i\in I}f(\sigma_i)(\varphi(\sigma_i)-\varphi(\sigma_{i-1})).$$   
+
+Conforme as partições nos intervalos de índice $K$ vão ficando mais finos temos a seguinte convergência: $$\Sigma[f,S,\varphi]\rightarrow \sum_{j\in J}f(\tau_j)(\varphi(\tau_j)-\varphi(\tau_{j-1}))+\sum_{k\in K}\int_{t_{k-1}}^{t_k}f  \text{d}\varphi .$$
+
+Por outro lado, podemos aplicar \textbf{2.5} para cada intervalo  $[t_{k-1},t_k]$ com $k\in K$ e, assim, escolher $S$ de tal forma que seja $\delta$-fina e, com isso, $|\Sigma {f,S,\varphi}-\int_a^b f  \text{d}\varphi|\leq \varepsilon$, aplicando o que já foi feito chegamos em: $$\left| \sum_{j\in J}f(\tau_j)(\varphi(\tau_j)-\varphi(\tau_{j-1}))+\sum_{k\in K}\int_{t_{k-1}}^{t_k}f  \text{d}\varphi-\int_a^b f  \text{d}\varphi\right|\leq \varepsilon .$$ Note que, pelo lema anterior, $$\sum_{k\in K}\int_{t_{k-1}}^{t_k}f  \text{d}\varphi-\int_a^b f  \text{d}\varphi= -\sum_{j\in J}\int_{t_{j-1}}^{t_j} f  \text{d}\varphi ,$$ donde segue o que queríamos provar. \eop \\ 
+
+Com isso podemos, finalmente, demonstrar o Teorema da Convergência Monótona:
+
+\begin{thrm}
+	
+	Sejam $f_1,f_2,...$ funções definidas em $[a,b]$ com valores não negativos tais que, para cada $t\in [a,b]$, $f_1(t)\leq f_2(t)\leq ...$ e tal sequência converge para o valor finito $f(t)$. Seja $\varphi$ uma função positiva definida em $[a,b]$ e assuma que cada $f_k$ é $\varphi$-integráveis por Henstock-Stieltjes e $\sup_k \int_a^b f_k  \text{d}\varphi < \infty$. Então $f$ é $\varphi$-integráveis por Henstock-Stieltjes e $ \int_a^b f_k  \text{d}\varphi \rightarrow  \int_a^b f  \text{d}\varphi$ se $k\rightarrow \infty$.
+	
+\end{thrm}
+
+\dem Seja $L$ o limite das integrais de cada $f_k$ em $[a,b]$, queremos provar que a integral de $f$ neste intervalo é igual a $L$. Seja $\varepsilon >0$ dado, queremos encontrar um calibre $\delta$ tal que toda partição $T$ $\delta$-fina satisfaz $|\Sigma[f,T,\varphi]-L|<\varepsilon$. Das hipóteses podemos enumerar alguns fatos que não são difíceis de ver: \\
+
+1) Existe um inteiro $\kappa$ tal que $0\leq L-\int_a^b f_\kappa  \text{d}\varphi <\varepsilon /4$. \\
+
+2) Para cada $t\in[a,b]$, existe um número inteiro positivo $i(t)$ tal que $0\leq f(t)-f_{i(t)}(t)< \varepsilon / 4(\varphi(b)-\varphi(a))$.  \\
+
+3) Para cada inteiro positivo $k$ existe um calibre $\gamma_k$ tal que, dada uma partição $S$ $\gamma_k$-fina de $[a,b]$,  $|\Sigma[f,T,\varphi]- \int_a^b f_k  \text{d}\varphi |<2^{-k-1}\varepsilon$. \\
+
+Assim, seja $\mu (t)=\max \{ \kappa,i(t) \}$, com isso, defina o calibre $\delta$ tal que $\delta(t)=\gamma_{\mu(t)}(t)$. Seja $T$ uma partição $\delta$-fina, mostraremos que $|\Sigma[f,T,\varphi]-L|<\varepsilon$, para isso escreveremos $\Sigma[f,T,\varphi]-L=e_1+e_2+e_3$, ou seja, dividimos este erro em três partes, em que cada uma satisfaz:  
+
+$$\begin{array}{lll}
+
+e_1 & = & \displaystyle\sum_{j=1}^n (\varphi(t_j)-\varphi(t_{j-1}))(f(\tau_j) - f_{\mu(\tau_j)}(\tau_j)),\\
+e_2 & = & \displaystyle\sum_{j=1}^n \left[ (\varphi(t_j)-\varphi(t_{j-1}))f_{\mu(\tau_j)}(\tau_j)-\displaystyle\int_{t_{j-1}}^{t_j}f_{\mu(\tau_j)} \text{d}\varphi \right], \\
+e_3 & = &   \displaystyle\sum_{j=1}^n \displaystyle\int_{t_{j-1}}^{t_j}f_{\mu(\tau_j)} \text{d}\varphi - A. \\
+
+\end{array}$$
+
+Para estimar $e_1$, observe que $\mu(\tau_j)\geq i(\tau_j)$, logo $0\leq f(\tau_j)-f_{\mu(\tau_j)}(\tau_j)< \varepsilon / 4(\varphi(b)-\varphi(a))$, donde segue que $|e_1|<\varepsilon/4$. Para estimar $e_2$ defina o conjunto $J_k=\{ j:\mu(\tau_j)=k \}$ para algum $k$ positivo. Para cada $j\in J_k$ temos que $\delta(\tau_j)=\gamma_k (\tau_j)$, logo $t_j-t_{j-1}<\gamma_k (\tau_j)$. Pelo lema anterior e pela escolha de $\gamma_k$, $$\left| \sum_{j\in J_k}\left[ (\varphi(t_j)-\varphi(t_{j-1}))f_{\mu(\tau_j)}(\tau_j)-\int_{t_{j-1}}^{t_j}f_{\mu(\tau_j)} \text{d}\varphi  \right] \right| < 2^{-k-1}\varepsilon.$$ Os conjuntos $J_1,J_2,...$ formam uma partição de $\{1,2,3,...\}$, portanto: $$ |e_2|= \left|\sum_{k=1}^{\infty} \sum_{j\in J_k}\left[ (\varphi(t_j)-\varphi(t_{j-1}))f_{\mu(\tau_j)}(\tau_j)-\int_{t_{j-1}}^{t_j}f_{\mu(\tau_j)} \text{d}\varphi  \right] \right| < \sum_{k=1}^{\infty} 2^{-k-1}\varepsilon=\frac{\varepsilon}{2}.$$  
+
+Finalmente, para estimar $|e_3|$, seja $p=\max\{ \mu(\tau_1),...,\mu(\tau_n) \}$, logo $\kappa\leq \mu(\tau_j)\leq p$ para todo $j$, assim $$\int_{t_{j-1}}^{j}f_\kappa  \text{d}\varphi \leq \int_{t_{j-1}}^{j}f_{\mu(\tau_j)}  \text{d}\varphi \leq \int_{t_{j-1}}^{j}f_p  \text{d}\varphi ,$$
+
+e, somando sobre todos os $j$, temos: $$L-\frac{\varepsilon}{4} < \int_a^b f_\kappa  \text{d}\varphi  \leq \sum_{j=1}^n \int_{t_{j-1}}^{t_j}f_{\mu(\tau_j)} \text{d}\varphi \leq \int_a^bf_p  \text{d}\varphi \leq L. $$ 
+
+Com isso concluímos que $|e_3|<\varepsilon / 4$, o que conclui a demonstração. \eop \\ 
+
+
+Disto temos, imediatamente, os seguintes: 
+
+\begin{cor}
+	
+	Suponha que $g_1,g_2,...:[a,b]\rightarrow [0,\infty)$ são funções $\varphi$-integráveis por Henstock-Stieltjes e $\sum_j g_j(t)<\infty$ para todo $t\in[a,b]$. Então $\sum_j \int_a^b g_j  \text{d}\varphi$ é finita se, e somente se, $\sum_j g_j$ é  $\varphi$-integráveis por Henstock-Stieltjes e, neste caso, $$\sum_j \int_a^b g_j  \text{d}\varphi = \int_a^b \sum_j g_j  \text{d}\varphi.$$
+	
+\end{cor}
+
+\dem Basta aplicar o teorema anterior com $f_j$ seguindo a seguinte regra de formação: $f_0=0$ e $g_j=f_j-f_{j-1}$. \eop \\
+
+Este resultado não será, por ora, usado diretamente, porém é interessante enunciá-lo. Segue agora o corolário que será usado:
+
+\begin{cor}
+	
+	 Se $S\subset [a,b]$ é a união contável de intervalos, então sua função característica é $\varphi$-integráveis por Henstock-Stieltjes. Em particular, isso vale para a qualquer subconjunto aberto de $[a,b]$.
+	
+\end{cor}
+
+\dem Se $S=\bigcup_{j=1}^\infty I_j$ tome $f_k= \mathbbm{1}_{\bigcup_{j=1}^k I_j}$ e aplique o teorema anterior. Se $S$ é um aberto qualquer, ele pode ser escrito como a união (disjunta) enumerável de intervalos abertos. \eop \\
+
+
+Antes de provar o último teorema, precisaremos de um lema técnico:
+
+\begin{lem}
+	
+	Sejam $f$ e $\varphi$ definidas em $[a,b]$ sendo a primeira com valores não negativos e a segunda crescente tal que existe a integral de Henstock-Stieltjes $\int_a^b f  \text{d}\varphi$. Seja $\varepsilon >0$ dado e $E=\{ t\in [a,b]:f(t)\geq 1 \}$, então existe um conjunto aberto $G$ que contém $E$ tal que $$\int_a^b  \mathbbm{1}_G  \text{d}\varphi \leq \varepsilon + \int_a^b  f  \text{d}\varphi .$$
+	
+\end{lem}
+
+\dem O lema será provado separadamente para a função $f\mathbbm{1}_{\{a\}}$ e $f\mathbbm{1}_{(a,b]}$. Começamos com o primeiro caso. O teorema é trivial para $E=\emptyset$, assim supomos que $f(a)\geq 1$, assim $\int_a^b f\mathbbm{1}_{\{a\}}  \text{d}\varphi =f(a)(\varphi(a+)-\varphi(a))$. Escolha $\alpha > a$ pequeno o bastante para que $\varphi(\alpha)-\varphi(a)<\varepsilon $, desta forma temos $G=[a,\alpha)$ aberto contendo $\{a\}$ e 
+
+$$\begin{array}{lll}
+ 
+\displaystyle\int_a^b \mathbbm{1}_G  \text{d}\varphi =(\varphi(\alpha-)-\varphi(a)) & \leq & (\varphi(\alpha)-\varphi(a)) \\
+\ & \leq & \varepsilon+\displaystyle\frac{1}{f(a)}\displaystyle\int_a^b f \mathbbm{1}_{\{a\}}  \text{d}\varphi \\
+\ & \leq &  \varepsilon + \displaystyle\int_a^b f \mathbbm{1}_{\{a\}}  \text{d}\varphi
+\end{array}$$
+
+como queríamos. 
+
+Para o resto da demonstração podemos assumir que $f(a)=0$, ou seja, $a\notin E$. Tomamos também $\varphi(t)=\varphi(b)$ para $t>b$, assim tal função é contínua à direita em $b$, além disso, como é crescente, sabemos ainda que ela é contínua à direita exceto num subconjunto enumerável de $(a,b]$, em particular esta função é contínua à direita em todos os pontos de um subconjunto denso neste intervalo. Com isso formamos partições $P_1, P_2,..., P_j,...$ de $[a,b]$ em que $P_j$ tem intervalos da forma $[p_j^{i-1},p_j^{i}]$ em que $i=1,2,...,Q(j)-1,Q(j)$ tais que $P_{j+1}$ refina $P_{j}$, $\varphi$ é contínua à direita em todos os pontos $p_j^i$ e $\max\{ p_j^1-p_j^0,...,p_j^{Q(j)}-p_j^{Q(j)-1} \}< 2^{-j}(b-a)$. Por hipótese a integral de Henstock-Stieltjes $\int_a^b f  \text{d}\varphi$ existe existe um calibre $\delta$ tal que, para toda partição T $\delta$-fina temos $|\Sigma[f,T,\varphi]-\int_a^b f  \text{d}\varphi|<\varepsilon / 2$. Usaremos $\delta$ para selecionar uma sequência de intervalos e um elemento de cada um deles da forma $((a_k,b_k],\tau_k)_{k\in \mathbb{N}}$ usando o seguinte procedimento: no primeiro estágio não existem casos anteriores selecionados, para $j\geq 1$, no $j$-ésimo estágio, selecionamos todos os $(a_k,b_k]$ que seguem o seguinte critério: \\
+
+1) $(a_k,b_k]$ é um dos intervalos de $P_j$. \\
+
+2) $(a_k,b_k]$ não está contido em nenhum intervalo selecionado previamente. \\
+
+3) existe pelo menos um ponto $\tau_k \in (a_k,b_k]\cap E$ tal que $b_k-a_k<\delta(\tau_k)$. \\
+
+Pode ser que haja mais de uma opção viável para $\tau_k$, porém apenas uma é escolhida. Note que todos os intervalos são disjuntos e que $f(\tau_k)\geq 1$ pra todo $k$ inteiro positivo.  
+
+Temos que: $\bigcup_{k=1}^{\infty} (a_k,b_k]\supset E$. Para mostrar este fato, tome $z\in E$. Para algum inteiro $j$ suficientemente grande temos $2^{-j}(b-a)<\delta(z)$. Como $a\notin E$, $a\neq z$, logo algum intervalo $(p_j^{i-1},p_j^i]$, para algum $i$ que varia entre $1$ e $Q(j)$, e o comprimento de tal intervalo deve ser menor que $2^{-j}(b-a)$. Tal intervalo deve ser selecionado no $j$-ésimo estágio, se não está contido num intervalo que foi selecionado anteriormente, em particular $z\in \bigcup_{k=1}^{\infty} (a_k,b_k]$ como queríamos.  
+
+Agora mostraremos que $\sum_{k=1}^\infty (\varphi(b_k)-\varphi(a_k))\leq \frac{1}{2}\varepsilon +\int_a^b f \text{d}\varphi$. Para isso, seja $K$ um inteiro positivo fixo, é suficiente mostrar a desigualdade para $\sum_{k=1}^K (\varphi(b_k)-\varphi(a_k))$. Sabemos que os intervalos $(a_1,b_1),...,(a_K,b_K)$ são disjuntos e o complemento de sua união é uma união finita de subintervalos de $[a,b]$, utilizando \textbf{2.5} obtemos uma partição $\delta$-fina para acada um destes subintervalos e, colocando todas juntas, uma partição $T=(n,t_v,\sigma_v)$ $\delta$-fina de $[a,b]$ em que algum dos seus intervalos são compreendidos por $([a_k,b_k],\tau_k)_{1\leq k \leq K}$. Como $f(\tau_k)\geq 1$ temos $$\sum_{k=1}^{K}(\varphi(b_k)-\varphi(a_k)) \leq \sum_{v=1}^{n}(\varphi(t_v)-\varphi(t_{v-1}))f(\sigma_v)\leq   \frac{\varepsilon}{2} +\int_a^b f \text{d}\varphi$$ pela escolha de $\delta$ e isto prova a desigualdade desejada.
+
+Para cada $k$ a função $\varphi$ é contínua à direita em $b_k$, portanto podemos escolher algum $c_k>b_k$ perto o suficiente de $b_k$ para que $\varphi(c_k) < \varphi(c_k) + 2^{-k-1}\varepsilon$, com isso $\sum_{k=1}^\infty (\varphi(c_k)-\varphi(k_k))<\varepsilon / 2$, a união dos intervalos da forma $(a_i,c_i)$, para $i$ inteiro positivo, não são necessariamente disjuntos, porém sua união forma um aberto $G$ contendo $E$. Segue de \textbf{3.8} que a integral de Henstock-Stieltjes da função característica de $G$ existe e é menor ou igual a 
+
+$$\begin{array}{lll}
+
+\displaystyle\sum_{k=1}^\infty \displaystyle\int_a^b  \mathbbm{1}_{(a_k,c_k)} \text{d}\varphi  & = &  \displaystyle\sum_{k=1}^\infty  (\varphi(c_k -)-\varphi(a_k +)) \\
+\ & \leq & \displaystyle\sum_{k=1}^\infty  (\varphi(c_k)-\varphi(a_k)) \\
+\ & \leq &   \varepsilon + \displaystyle\int_a^b f  \text{d}\varphi
+\end{array}$$
+
+e isto completa a prova do lema. \eop  \\
+
+Por fim, provaremos que a integral de Henstock da função característica de um conjunto é a medida de Lebesgue do mesmo, na verdade provaremos mais do que isso:
+
+\begin{thrm}
+	
+	Seja $\varphi: [a,b]\rightarrow \mathbb{R}$ uma função crescente. Seja $\mathcal{K}$ a coleção dos conjuntos $S\subset [a,b]$ para os quais existe a integral de Henstock-Stieltjes: $$\mu_\varphi (S)=\int_a^b \mathbbm{1}_S  \text{d}\varphi .$$ Então $\mathcal{K}$ é uma $\sigma$-álgebra que inclui o conjunto $\mathcal{B}$ dos boreleanos de $[a,b]$ e $([a,b],\mathcal{K},\mu_\varphi)$ não só é um espaço de medida completo como é o completamento de $([a,b],\mathcal{B},\mu_\varphi)$. Além disso, toda medida positiva finita $\mu$ nos boreleanos  $\mathcal{B}$ são da forma $\mu_\varphi$ para alguma função crescente $\varphi$.
+	
+	
+\end{thrm}
+
+\dem Claramente temos que, se $K_1,K_1\in \mathcal{K}$ e $K_1\subset K_2$ então $K_2\setminus K_1\in \mathcal{K}$, em particular, se todo complementar em $[a,b]$ de um elemento de $\mathcal{K}$ está em $\mathcal{K}$. Além disso segue de \textbf{3.8} (não diretamente, mas de um corolário imediato para a integral de uma série de funções positivas) que, dados enumeráveis elementos disjuntos de $\mathcal{K}$, sua união também é membro de $\mathcal{K}$. Com isto também temos que $\mu_\varphi$ é enumeravelmente aditiva em $\mathcal{K}$, portanto $([a,b],\mathcal{K},\mu_\varphi)$ é um espaço de medida, além disso $\mathcal{B}\subset \mathcal{K}$ uma vez que todo aberto na reta é união disjunta enumerável de intervalos abertos, os quais são $\varphi$-integráveis. 
+
+Resta mostrar que tal $\sigma$-álgebra é o completamento de $([a,b],\mathcal{B},\mu_\varphi)$. Pela primeira propriedade desta demonstração, temos que o completamento de $([a,b],\mathcal{B},\mu_\varphi)$ está contido em $([a,b],\mathcal{K},\mu_\varphi)$, precisamos, agora, provar a outra inclusão, para isto, usaremos a seguinte construção auxiliar: Se $E\in \mathcal{K}$ e $n\in \mathbb{N}$, então, por \textbf{3.9}, existe um conjunto $G_n$ tal que $E\subset G_n$ e $\mu_\varphi (G)\leq \frac{1}{n} +\mu_\varphi (E)$. Logo $B=\bigcap_{n=1}^{\infty}G_n$ é um conjunto de Borel e $E\subset B$ e $\mu_\varphi (B)=\mu_\varphi (E)$. Assim, temos que $B\setminus E$ não é necessariamente de Borel, porém está em $\mathcal{K}$ e $\mu_\varphi (B\setminus E)=0$, logo, aplicando novamente o resultado, existe um boreleano $B'$ que contém $B\setminus E$ e $\mu_\varphi (B')=0$, portanto $B\setminus E$ está no completamento de $\mathcal{B}$, assim como $E$. 
+
+Por último, se $\mu$ é uma medida positiva em $\mathcal{B}$ podemos definir a função $\varphi(t)=\mu([a,t])$, claramente $\mu$ e $\mu_\varphi$ coincidem para intervalos abertos, logo coincidem também em $\mathcal{B}$, afinal, todo aberto é a união enumerável disjunta de intervalos e todo elemento de $\mathcal{B}$ é a união enumerável ou complemento de conjuntos desta forma. \eop
+
+
+
+
+\begin{cor}
+	
+	Seja $([a,b],\mathcal{L},m)$ o espaço de medida de Lebesgue do intervalo $[a,b]$, então $S\in \mathcal{L}$ se, e somente se, sua integral de Henstock $\int_a^b \mathbbm{1}_S$ existe e $m(S)=\int_a^b \mathbbm{1}_S$.
+	
+\end{cor}
+
+\dem Tome $\varphi (t)=t$ no teorema anterior. \eop \\
+
+Isto completa a verificação de que a integral de Henstock realmente é uma generalização da integral de Lebesgue, uma vez que esta integral é calculada primeiro separando a função em partes positivas e negativas. Daí é possível construir uma sequência de funções simples (combinações lineares de funções características com coeficientes positivos) que convergem para a parte positiva e, com isso, usa-se uma versão do Teorema da Convergência Monótona, já que a integral de uma função característica dará justamente a medida de Lebesgue, logo, o valor de cada função da sequência é conhecido, bastando calcular um limite. O argumento para a parte negativa da função é exatamente o mesmo. Como a integral de Henstock de uma função característica é a medida de Lebesgue do conjunto em questão, a integral de Henstock tem propriedade de linearidade e vale o Teorema da Convergência monótona, toda função que é integrável também será por Henstock e os valores das integrais coincidem. Conseguimos ainda concluir uma certa ``volta'' para este resultado, uma vez que uma função que é absolutamente integrável por Henstock também será integrável por Lebesgue. Desta forma, podemos concluir que as funções que são integráveis por Henstock e não são por Lebesgue necessariamente são funções que não são absolutamente integráveis. Observamos ainda que o mesmo podemos concluir para a integral de Henstock-Stieltjes e a integral de Lebesgue com a medida $\mu_\varphi$. Assim concluímos: 
+
+\begin{thrm}
+	
+	Seja $f$ uma função em $[a,b]$ e suponha que ela é $\mu$-integrável por Lebesgue, em que $\mu$ é uma medida positiva em uma $\sigma$-álgebra completa que contém os boreleanos de $[a,b]$. Então $\mu=\mu_\varphi$ para alguma função crescente $\varphi$, $f$ é $\varphi$-integrável por Henstock-Stieldjes e $$\int_a^b f  \text{d}\mu = \int_a^b f  \text{d}\varphi .$$ \ \eop
+	
+\end{thrm}
+
+O exemplo dado de função que não é integrável por Lebesgue , porém é por Henstock também dava um exemplo de função que não era por Riemann, porém ela é integrável por Riemann no sentido impróprio, ou seja, usando o limite de integrais de Riemann, desta forma, cabe o questionamento: toda função que é integrável por Riemann no sentido impróprio também é integrável por Henstock? Concluímos esta seção mostrando que sim e concluindo que a integral de Henstock fornece, de fato, uma generalização para as integrais de Riemann (próprias e impróprias) e de Lebesgue. 
+
+\begin{thrm}
+	
+	Sejam $f$ e $\varphi$ funções em $[a,b]$ e $\varphi$ contínua em $b$. Se $f$ é $\varphi$-integrável e sua integral de Henstock-Stieltjes tem valor $L$, então $F(t)=\int_a^t f  \text{d}\varphi $ é contínua em todos os pontos em que $\varphi$ é, em particular, $F(b)=\lim_{x\rightarrow b}F(x)=L$. Além disso, se $F(t)$ existe para todo $a\leq t <b$ e $\lim_{x\rightarrow b}F(x)=L$, então $f$ é  $\varphi$-integrável e sua integral de Henstock-Stieltjes tem valor $L$.  
+	
+\end{thrm}
+
+\dem Fixe um valor $p\in [a,b)$ em que $\varphi$ é contínua à direita, mostraremos que $F$ é contínua à direita neste ponto (a prova para a continuidade à esquerda é análoga, donde segue a continuidade em geral). Seja $\varepsilon >0$ dado e escolha um calibre $\delta$ como é feito na definição de integrabilidade e que seja pequeno o suficiente para que $p+\delta(p)<b$, sendo assim, tome $q\in (p,p+\delta(p))$, aplique \textbf{2.5} para $[a,p]$ e $[q,b]$ para obter uma partição $\delta$-fina em que $[t_{j-1},t_j]=[p,q]$ e $\tau_j = p$ para algum $j$ e aplique o \textbf{3.5} para $J=\{j\}$, com isso temos que $\left|f(p)(\varphi(q)-\varphi(p)) - \int_p^q f  \text{d}\varphi \right| <\varepsilon $, o que prova que $$q\in (p,p+\delta(p)) \Rightarrow |F(q)-F(p)|<\varepsilon + |f(p)| \ |(\varphi(q)-\varphi(p))|.$$ Portanto $\lim \sup_{q\rightarrow p^+} |F(q)-F(p)|\leq \varepsilon$, como $\varepsilon$ é arbitrário temos que $$\lim \sup_{q\rightarrow p^+} |F(q)-F(p)|\leq 0 \Rightarrow \lim_{q\rightarrow p^+} F(q)=F(p).$$
+
+Para a segunda parte do teorema, basta provar que, dada a hipótese, $f$ é $\varphi$-integrável, a conclusão sobre seu limite seguirá do resultado anterior, porém isso é consequência imediata de \textbf{3.4}.  \eop  
+
+\section{Condição necessária e suficiente para a integração de Henstock}
+
+A maioria dos resultados desta seção serão provados apenas para a integral de Henstock, uma vez que a conclusão principal diz respeito a propriedades que supõem a continuidade da função primitiva, sendo que esta continuidade não ocorre necessariamente para integrais de Stieltjes, apesar de que poderemos adaptar os resultados e enunciar uma versão válida para todas as integrais. Seguiremos a linha traçada em [8], fazendo as devidas alterações na notação e corrigindo alguns pequenos erros (provavelmente de digitação) contidos no material. 
+
+Primeiramente precisamos definir o que significa uma função ser $\delta$-absolutamente contínua ($AC_\delta$) e  $\delta$-absolutamente contínua generalizada ($ACG_\delta$): 
+
+\begin{mydef}
+	
+	Seja $F$ uma função em $[a,b]$ e seja $E$ um subconjunto do seu domínio. Dizemos que $F$ é $AC_\delta$ em $E$ se, dado $\varepsilon >0$ existe um número positivo $\kappa$ e um calibre $\delta$ tal que $|\Sigma[1,T_E,F]|<\varepsilon$ para toda partição $T$ de $[a,b]$ em que $T_E$ é a restrição de T em que $\tau_i \in E$, que seja $\delta$-fina e $\mu(T_E)<\kappa$, sendo $\mu(T_E)$ a medida do maior intervalo de $T_E$. Dizemos que a função é $ACG_\delta$ em $E$ se $E$ pode ser escrito como a união enumerável de conjuntos em que $F$ é $AC_\delta$.
+	
+\end{mydef}
+
+Agora provaremos três lemas que possibilitarão a demonstração do teorema principal desta seção: 
+
+\begin{lem}
+	
+	Seja $f$ uma função em $[a,b]$ e $E$ um subconjunto do domínio de $f$. Se $\mu (E)=0$, então, dado $\varepsilon >0$ existe um calibre $\delta$ tal que $\Sigma[|f|,T_E]<\varepsilon$ para toda partição $T$ $\delta$-fina. 
+	
+\end{lem}
+
+\dem Seja $g$ uma função definida em $[a,b]$ tal que $g=|f|$ em $E$ e constante igual a $0$ fora de $E$. Temos que a integral de Henstock de $g$ em $[a,b]$ é igual a zero e, pela definição da integral, temos exatamente o que queríamos, pois $\Sigma[|f|,T_E]=\Sigma[g,T]=|\Sigma[g,T]|$.  \eop \\
+
+\begin{lem}
+	
+	Suponha que $F$, definida em $[a,b]$, é $ACG_\delta$ em $ [a,b]$ e seja $E\subset [a,b]$. Suponha que $\mu(E)=0$, então, dado $\varepsilon >0$, existe um calibre $\delta$ tal que $|\Sigma[1,T_E,F]|<\varepsilon$ para toda partição $T$ $\delta$-fina.   	
+
+\end{lem}
+
+\dem Por hipótese, $E=\bigcup_{n=1}^\infty E_n$, em que $E_n$ são disjuntos dois a dois e $F$ é $AC_\delta$ em cada um deles. Seja $\varepsilon >0$. Isso significa que, para cada $n$, existe um calibre $\delta_n$ e um número $\kappa_n$ tal que  $|\Sigma[1,T_E^n,F]|<\varepsilon /2^n$ para toda partição $T^n$ $\delta_n$-fina e $\mu(T_E^n)<\kappa_n$. Tome $\delta (x)=\min \{ \delta_n(x) \ , \ \inf \{|y-x| : y\in E_n \setminus O_n \}  \}$, sendo $O_n$ um aberto que cobre $E_n$ e tal que $\mu (O_n)< \kappa_n$, o que só é possível pois $\mu(E)=\mu(E_n)=0$ para todo $n$. Isso é feito para garantir que a partição $T=\bigcup_{n=1}^\infty T^n$ seja $\delta$-fina. Observe que, com isso, temos que $$|\Sigma[1,T_E,F]|\leq \sum_{n=1}^\infty |\Sigma[1,T_E^n,F]|< \sum_{n=1}^\infty \varepsilon /2^n=\varepsilon.$$  \eop \\
+
+O terceiro e último lema não é apenas um resultado técnico que será usado apenas neste contexto, é um resultado extremamente importante na teoria da medida, usado em várias demonstrações sobre integração e outros tópicos: trata-se do Lema da Cobertura de Vitali, para isso, precisamos da seguinte: 
+
+\begin{mydef}
+	
+	Seja $E\subset \mathbb{R}$. Uma coleção $\mathcal{I}$ é uma Cobertura de Vitali para $E$ se, dado $x\in E$ e $\varepsilon > 0$, existe um intervalo $I\in \mathcal{I}$ tal que $x\in I$ e $\mu(I) < \varepsilon$.
+	
+\end{mydef}
+
+Assim podemos enunciar e provar o seguinte: 
+
+\begin{lem}
+	
+	\textbf{(Lema da Cobertura de Vitali)} Seja $E$ um subconjunto da reta tal que $\mu ^*(E)<\infty$. Se $\mathcal{I}$ é uma cobertura de Vitali para $E$, então, dado $\varepsilon >0$, existe uma coleção finita de $n$ intervalos $I_k\in \mathcal{I}$ disjunta dois a dois tal que $\mu ^*\left(E\setminus \bigcup_{k=1}^n I_k \right)<\varepsilon$. Além disso, existe uma sequência de $I_k\in \mathcal{I}$ tal que  $\mu ^*\left(E\setminus \bigcup_{k=1}^\infty I_k \right)=0$.
+	
+\end{lem}
+
+\eop \\
+
+A demonstração deste lema será omitida. A sua versão padrão pode ser encontrada em [7] de maneira muito bem feita (ela também está em [6] e [8], versões simplificadas dela podem ser encontradas em [4] e [5]). Por outro lado, também pode ser demonstrado na linguagem das integrais de calibre utilizando \textbf{3.11} e \textbf{3.9}. 
+
+Com isso podemos caracterizar a integrabilidade por Hanstock através da existência de uma primitiva com certas características: 
+
+\begin{thrm}
+	
+	Uma função $f$ em $[a,b]$ é integrável por Henstock se, e somente se, existe uma função $F$ no mesmo domínio que é  $ACG_\delta$ em $[a,b]$ e $F'=f$ quase sempre. 
+	
+\end{thrm}
+
+\dem Primeiro suponha que $f$ é integrável por Henstock em $[a,b]$. Queremos mostrar que $F(t)=\int_a^t f$ é diferenciável e $F'=f$ quase sempre. Provaremos para a derivada em uma direção (na outra direção a prova é exatamente a mesma). Seja $A=\{x\in [a,b): F'_+(x)\neq f(x)\}$, queremos provar que este conjunto tem medida nula. Se a função possui derivada à direita no ponto $x$ e ela é igual a $f(x)$ então, dado $\alpha > 0$, existe $s>0$ tal que se $v\in I$, sendo $I$ uma vizinhança de $x$, tal que $x<v<x+s$ então $$\left| \frac{F(v)-F(x)}{v-x} -f(x) \right| \leq \alpha.$$ Se $x\in A$ negamos a afirmação anterior e obtemos o seguinte: existe $\alpha(x)>0$ tal que, dado $s>0$, existe um ponto $v\in I$ com $x<v<x+s$ tal que $$\left| \frac{F(v)-F(x)}{v-x} -f(x) \right| > \alpha,$$ donde segue que $$\left| (F(v)-F(x))  -f(x)(v-x) \right| > \alpha (v-x).$$ Note que $\alpha$ depende de $x$, assim usaremos a notação $\alpha_x$, da mesma forma usaremos a notação $v_{x,s}$, pois $v$ depende de $x$ e $s$. Seja $A_n=\{ x\in A: \alpha_x \geq 1/n \}$, é suficiente mostrar que $A_n$ tem medida nula. Fixe $n$ e seja $\varepsilon > 0$. Como $F$ é definida por uma integral de Henstock, sabemos que existe um calibre $\delta$ tal que, se $T$ é uma partição $\delta$-fina, então $$\left| \Sigma[1,T,F] - \int_a^b f \right|<\frac{\varepsilon }{4n}.$$ Desta forma, podemos definir o conjunto $\mathcal{F}_n = \{  [x,v_{x,s}] : x\in A_n  \ , \ 0 <s<\delta(s) \}$ e notamos que este conjunto satisfaz as hipóteses do Lema da Cobertura de Vitali (\textbf{4.5}), logo $\mathcal{F}_n$ possui um subconjunto finito $\mathcal{I}$ de intervalos disjuntos tais que $$\mu(A_n)< \sum_{I\in \mathcal{I}} \mu(I)+\frac{\varepsilon}{2} . $$ Note que $\mathcal{I}$ é $\delta$-fino considerando $\tau_i$ o extremo esquerdo de um intervalo, note também que, para $[c_i,d_i]\in \mathcal{I}$, temos $$\alpha_{c_i}(d_i - c_i)\leq \left| (F(d_i)-F(c_i))  -f(c_i)(d_i-c_i) \right| . $$ Utilizando \textbf{3.5} temos que: $$\sum_{I\in \mathcal{I}}\mu(I) \leq \sum_{i=1}^k \frac{1}{\alpha_{c_i}} \left| (F(d_i)-F(c_i))  -f(c_i)(d_i-c_i) \right| \leq \frac{n \ 2 \varepsilon}{4n}= \frac{\varepsilon}{2}$$ donde concluímos que $\mu(A_n)< \frac{\varepsilon}{2} + \frac{\varepsilon}{2} = \varepsilon$, logo $\mu(A_n)=0$ para todo n, já que $\varepsilon$ é arbitrário. 
+
+Agora é preciso mostrar que a função $F$ é $ACG_\delta$, para isso, defina $E_n=\{ x\in [a,b]: n-1 \leq |f(x)| < n \}$, note que $[a,b]=\bigcup_{n=1}^\infty E_n$, portanto, basta provar que, para todo $n$, $F$ é  $AC_\delta$. Fixe $n$ e seja $\varepsilon > 0$ dado, logo existe um calibre $\delta$ tal que  $\left| \Sigma[f,T] - \int_a^b f \right|<\varepsilon$ para toda partição $T$ $\delta$-fina. Defina $\kappa=\varepsilon / n$. Suponha que $\mu(T_{E_n})< \kappa$, usando \textbf{3.5} temos que $$\left| \Sigma[1,T_{E_n},F] \right|\leq \left| \Sigma[1,T_{E_n},F] - \Sigma[f,T_{E_n}]\right|+ |\Sigma[f,T_{E_n}]|<\varepsilon + n\mu(T_{E_n})=2\varepsilon,$$ o que prova que $F$ é $AC_\delta$ para $E_n$. Isto termina um lado da demonstração. 
+
+Agora suponha, por outro lado, que existe uma função $F$ $ACG_\delta$ em $[a,b]$ e $F'=f$ quase sempre. Seja $A$ conforme definido anteriormente, porém para a derivada total, não apenas à direita. Seja $\varepsilon > 0$. Para $x\in [a,b]\setminus A$ escolha $\delta(x)>0$ tal que $$|(F(y)-F(x))-f(x)(y-x)|<\varepsilon |y-x|$$ se $|y-x|<\delta(x)$ e $y\in [a,b]$. Pelos lemas \textbf{4.2} e \textbf{4.3}, podemos definir $\delta(x)>0$ tal que $| \Sigma[f,T_E]|<\varepsilon$ e $| \Sigma[1,T_E,F]|<\varepsilon$. Com isso, definindo $T'=T\setminus T_E$ temos: $$|\Sigma[f,T]-\Sigma[1,T,F]|\leq |\Sigma[f,T']-\Sigma[1,T',F]|+|\Sigma[f,T_E]|+|\Sigma[1,T_E,F]|<\varepsilon (b-a)+2\varepsilon .$$ Isto prova não só que $f$ é integrável por Henstock, como ainda $$\int_a^b f=\int_a^b  \text{d}F= F(b)-F(a),$$ em particular, aplicando \textbf{3.4}, temos $$\int_a^x f=\int_a^x  \text{d}F=F(x)-F(a).$$ \eop \\
+
+Esta caracterização em termos de primitivas $ACG_\delta$ pode ser reescrita sem a linguagem das funções calibre. Temos que uma função $F$ com domínio em $[a,b]$ é $AC_\delta$ num conjunto $E$ se, e somente se, ela é $AC_*$ (absolutamente contínua no sentido estrito) em E, ou seja, que dado $\varepsilon >0$ existe $\delta > 0$ (agora um número e não uma função) tal que $\sum_{i=1}^n (t_i-t_{i-1}) < \delta$ implica $\sum_{i=1}^n \sup_{x,y \in [t_{i-1},t_i]} |F(x)-F(y)|< \varepsilon$ em que $t_i\in E$ e $t_1<...<t_n$.  Para verificar este fato basta observar que, no caso da função calibre, podemos supor, sem perda de generalidade, que $\tau_i$ está em um dos extremos do intervalo, já que as somas $\Sigma$ serão as mesmas se feitas com $\tau_i\in [t_{i-1},t_i]$ ou $\tau_i\in [t_{i-1},\tau_i]$ e $\tau_i\in [\tau_i,t_i]$, sendo que em ambas as opções temos intervalos $\delta$-finos. Com isso concluímos também que uma função é $ACG_\delta$ em $E$ se, e somente se, é $ACG_*$ (absolutamente contínua generalizada no sentido estrito), em que $ACG_*$ é definido a partir de $AC_*$ de maneira análoga ao caso de $ACG_*$. Mais detalhes são dados em [8].
+
+Terminaremos esta seção enunciando o Teorema Fundamental do Cálculo para integrais de Henstock na sua versão mais abrangente e, para isto, falta apenas provar a seguinte: 
+
+\begin{prop}
+	
+	Seja $f$ definida em $[a,b]$ integrável por Henstock e seja $F(x)=\int_a^x f$. Então $F$ é diferenciável em todo ponto $t_0$ em que $f$ é contínua e $F'(t_0)=f(t_0)$.
+	
+\end{prop}    
+
+\dem Suponha que $f$ é contínua em $t_0$, logo, dado $\varepsilon >0$, existe $\delta >0$ tal que $t\in [t_0+\delta , t_0-\delta]\cap [a,b]$ implica $|f(t)-f(t_0)|<\varepsilon$. Observamos que, se duas funções $g$ e $h$ com domínio em $[a,b]$ são tais que $|g|\leq h$, então $|\int_a^b f|\leq \int_a^b h $, isso segue imediatamente do fato de que $|\Sigma[f,T]|\leq \Sigma [h,T]$ (isso também vale para integrais de Henstock-Stieltjes). Logo, se $s\in [t_0+\delta , t_0-\delta]\cap [a,b]$ temos $$\left|\int_{t_0}^s f-\int_{t_0}^s f(t_0)\right|<\int_{t_0}^s \varepsilon=|s-t_0|\varepsilon.$$ Por outro lado $$\left|\int_{t_0}^s f-\int_{t_0}^s f(t_0)\right|=\left|F(s)-F(t_0)-(s-t_0) f(t_0)\right|,$$ portanto $$\lim_{s\rightarrow t_0}\frac{F(s)-F(t_0)}{s-t_0}=f(t_0). $$
+
+Podemos observar que exatamente o mesmo argumento pode ser usado para continuidade lateral e derivadas laterais. \eop \\
+
+Juntando tudo aquilo que foi mostrado nesta seção, podemos enunciar: 
+
+\begin{thrm}
+	
+	\textbf{(Teoremas Fundamentais do Cálculo para integrais de Henstock)} \\
+	
+	\textbf{I.} Seja $f$ definida em $[a,b]$. $\int_a^b f$ existe e $F(x)=\int_a^x f$ se, e somente se, $F$ é $ACG_*$ em $[a,b]$, $F(a)=0$ e $F'=f$ em quase toda parte. Se $\int_a^b f$ existe e $f$ é contínua em $x$, então $F'$ existe em $x$ e $F'(x)=f(x)$. \\
+	
+	\textbf{II.} Seja $F$ definida em $[a,b]$. Então $F$ é $ACG_*$ se, e somente se, $F'$ existe em quase toda parte, $F'$ é integrável em $[a,b]$ por Henstock e $\int_a^x F'=F(x)-F(a)$ para todo $x\in[a,b]$. 
+	
+\end{thrm} 
+
+\ \eop \\
+
+Observamos que, dentro do domínio que compreende o espaço $B$ de funções $ACG_*$ em $[a,b]$ que se anulam em $a$, a operação de integração e diferenciação são, de fato, uma a inversa da outra no seguinte sentido: Seja $A$ o conjunto das funções integráveis por Henstock em $[a,b]$, definimos o operador $\int_a: A\rightarrow B$ por $(\int_a f)(x)=\int_a^x f$ para funções $f\in A$; podemos definir o operador $D: B\rightarrow A$ tal que $(Df)(x)=f'(x)$ para $f\in B$. O Teorema \textbf{4.8} afirma que $D\circ \int_a = Id_A$ e $\int_a\circ D = Id_B$, tudo isso a menos de um conjunto de medida nula. 
+
+\section{Algumas aplicações}
+
+A primeira aplicação é o use de \textbf{4.8} para conseguir uma condição necessária e suficiente para trocar os sinais de integral e derivada. Antes de seguir o roteiro de demonstrações feito em [1 ; p.4], é preciso estabelecer uma regra simples bastante usada no cálculo, porém que possui uma demonstração não é trivial para o caso de integrais de Henstock-Stieltjes:  
+
+\begin{prop}
+	
+	Seja $\sigma: [a',b']\rightarrow [a,b]$ uma bijeção crescente, $f$ e $\varphi$ definidas em $[a,b]$, então a integral de Henstock-Stieltjes $\int_a^b f d\varphi$ existe se, e somente se, existe $\int_{a'}^{b'} (f\circ \sigma) d(\varphi \circ \sigma)$, sendo que elas são iguais. 
+	
+\end{prop}
+
+\dem Para facilitar a notação, definimos $f\circ \sigma=f'$ e $\varphi \circ \sigma=\varphi'$. Da mesma forma, dada uma partição $T$ de $[a,b]$ definimos uma partição $T'$ de $[a',b']$ aplicando $\sigma^{-1}$ aos elementos de $T$. Podemos verificar que $\Sigma[f,T,\varphi]=\Sigma[f',T',\varphi']$. Queremos mostrar que $\lim_T \Sigma[f,T,\varphi]$ existe se, e somente se, $\lim_{T'} \Sigma[f',T',\varphi']$ existe e, neste caso, eles são iguais. Sendo assim, é suficiente mostrar apenas que $T$ vai ficando cada vez mais fina se, e somente se, $T'$ vai ficando mais fina. Assim, seja $\delta'$ um calibre em $[a',b']$, é suficiente provar a existência de um calibre $\delta$ em $[a,b]$ tal que se $T$ é $\delta$-fina então $T'$ é $\delta'$-fina. 
+
+O que faz esta demonstração não ser trivial é que não basta tomar a escolha que seria intuitivamente óbvia de $\delta=\delta'\circ \sigma^{-1}$, este calibre não irá funcionar, precisaremos de algo um pouco mais sofisticado. Como $\sigma^{-1}$ é uma bijeção crescente, ela é contínua. 
+
+Sendo assim, para cada $\tau\in [a,b]$ podemos escolher $\delta(\tau)$ para ser um número positivo pequeno o suficiente para que $\tau+\delta(\tau)\in [a,b)$ e $$\sigma^{-1}\left(\tau+\delta(\tau)\right)< \sigma^{-1}(\tau)+\frac{1}{2}\delta'\left(\sigma^{-1}(\tau)\right).$$
+
+Da mesma forma, podemos, para cada $\tau\in (a,b]$, escolher um número $\delta(\tau)$ positivo pequeno o bastante para que $\tau - \delta(\tau)\in [a,b]$ e $$\sigma^{-1}\left(\tau-\delta(\tau)\right) > \sigma^{-1}(\tau)-\frac{1}{2}\delta'\left(\sigma^{-1}(\tau)\right).$$
+
+As duas condições podem ser satisfeitas ao mesmo tempo, uma vez que $\frac{1}{2}\delta'\left(\sigma^{-1}(\tau)\right)$ é um número positivo. Agora suponha que $T$ seja uma partição $\delta$-fina, logo, para todo $j$, temos $\tau_j\in[t_{j-1},t_j]$ e $t_j-t_{j-1}<\delta(\tau_j)$, portanto $t_j \leq \tau_j+\delta(\tau_j)$ e $t_{j-1}\geq \tau_j-\delta(\tau_j)$. 
+
+Se $\tau_j\in [a,b)$, então temos que $\sigma^{-1}(t_j)< \sigma^{-1}(\tau_j)+\frac{1}{2}\delta'\left(\sigma^{-1}(\tau_j)\right)$, se $\tau_j=b$, temos que $\tau_j=t_j$ e, da mesma forma, obtemos  $\sigma^{-1}(t_j) > \sigma^{-1}(\tau_j)-\frac{1}{2}\delta'\left(\sigma^{-1}(\tau_j)\right)$. Disto concluímos que $$t_j'-t_{j-1}'=\sigma^{-1}(t_j)-\sigma^{-1}(t_{j-1})< \delta'\left(\sigma^{-1}(\tau_j)\right)=\delta'(\tau_j')$$ donde segue que $T'$ é $\delta'$-fina. \eop \\
+
+Agora podemos mostrar o Teorema 4 de [1]:
+
+\begin{thrm}
+	
+	Seja $f$ uma função real com domínio $[a',b']\times [a,b]$. Suponha que $f(\cdot , y)$ é $ACG_*$ em $[a',b']$ para quase todo $u\in (a,b)$. Então $F:=\int_a^b f(\cdot , y) \text{d}y$ é $ACG_*$ em $[a',b']$ e $F'(x)=\int_a^b f_1(x,y) \text{d}y$ para quase todo $x\in(a',b')$ se, se somente se $$\int_s^t\int_a^b f_1(x,y) \text{d}y  \text{d}x=\int_a^b\int_s^t f_1(x,y) \text{d}x  \text{d}y \ \ \text{para todo intervalo }[s,t]\subset [a',b'].$$
+	
+\end{thrm} 
+
+\dem Suponha que $F$ é $ACG_*$ e $\frac{\partial }{\partial x}\int_a^b f(x,y) \text{d}y= \int_a^b f_1(x,y) \text{d}y$ e $[s,t]\subset [a', b']$. Aplicando \textbf{4.8.II} a $F$ e $f(\cdot , y)$ temos $$\int_s^t \int_a^b f_1(x,t)=F(t)-F(s)=\int_a^b f(t,y)-f(s,y) \text{d}y=\int_a^b\int_s^t f_1(x,y) \text{d}x  \text{d}y. $$
+
+Agora, suponha que  $$\int_s^t\int_a^b f_1(x,y) \text{d}y  \text{d}x=\int_a^b\int_s^t f_1(x,y) \text{d}x  \text{d}y \ \ \text{para todo intervalo }[s,t]\subset [a',b'].$$
+
+Seja $x\in (a',b')$ e $h\in\mathbb{R}$ tais que $x+h\in (a',b')$. Aplicando \textbf{4.8.II} a $f(\cdot, y)$ e utilizando \textbf{5.1} temos
+
+$$\begin{array}{lll}
+
+\displaystyle\int_x^{x+h}\displaystyle\int_a^b f_1(x',y) \text{d}y  \text{d}x' & = & \displaystyle\int_a^b \displaystyle\int_x^{x+h} f_1(x',y) \text{d}x' \text{d}y \\
+ \ & = & \displaystyle\int_a^b f(x+h,y)-f(x,y) \text{d}y \\
+ \ & = & \displaystyle\int_a^b f(x+h,y) \text{d}y-\int_a^bf(x,y)d \text{d}y
+ \end{array}$$
+
+Com isso temos, utilizando \textbf{4.8.I} 
+
+$$\begin{array}{lll}
+
+ F'(x) & = & \displaystyle\lim_{h\rightarrow 0}\displaystyle\frac{F(x+h)-F(x)}{h}  \\
+\ & = & \displaystyle\lim_{h\rightarrow 0} \displaystyle\frac{1}{h} \displaystyle\int_x^{x+h}\int_a^b f_1(x',y) \text{d}y  \text{d}x' \\
+\ & = & \displaystyle\int_a^b f_1(x,y)  \text{d}y \text{ para quase todo } x\in (a', b').
+\end{array}$$
+
+Assim, repetindo o mesmo argumento da primeira parte do teorema, temos que $\int_{a'}^x F'=F(x)-F(a')$ para todo $x\in [a', b']$, assim concluímos, com \textbf{4.6}, que $F$ é $ACG_*$ em $[a', b']$. \eop
+
+Uma observação interessante é que, nesta demonstração, foi usada apenas a linearidade da integral sobre $y\in [a,b]$, o que nos permite enunciar a seguinte generalização: 
+
+\begin{cor}
+	
+	Seja $S$ um conjunto e suponha que $f:[a',b']\times S \rightarrow \mathbb{R}$. Seja $f(\cdot , y)$ $ACG_*$ em $[a', b']$ para todo $y\in S$. Seja $T$ uma função com valores reais em $S$ e $\mathcal{L}$ um funcional linear definido num subespaço de $T$. Defina $F:[a' ,b']\rightarrow \mathbb{R}$ como $F(x)=\mathcal{L}[f(x,\cdot)]$. Então $F$ é $ACG_*$ em $[a', b']$ e $F'(x)=\mathcal{L}[f_1(c,\cdot)]$ para quase todo $x\in (a', b')$ se, e somente se, $$\int_s^t\ \mathcal{L}[ f_1(x,\cdot)]  \text{d}x=\mathcal{L}\int_s^t f_1(x,\cdot) \text{d}x \ \ \text{para todo intervalo }[s,t]\subset [a',b'].$$
+	
+\end{cor}
+
+\ \eop \\
+
+Com isso podemos considerar $\mathcal{L}$ sendo, por exemplo, uma integral ou uma soma infinita, desta forma conseguimos condições necessárias e suficientes para trocar a ordem de integrais ou comutar uma integral com uma soma infinita (conforme feito nos corolários 6 e 7 em [1 ; p.6]). 
+Também temos, juntando \textbf{5.3}, \textbf{4.8} e \textbf{3.2}, a seguinte condição suficiente para trocar os sinais de integral e derivada: 
+
+\begin{cor}
+	
+	Seja $f:[a',b']\times [a,b]\rightarrow \mathbb{R}$. 
+	
+	\textbf{i.} Suponha que $f(\cdot, y)$ é contínua em $[a',b']$ para quase todo $y\in (a,b)$ e diferenciável em $(a',b')$ a menos de um conjunto enumerável para quase todo $y\in (a,b)$. Desta forma, se $$\int_s^t\int_a^b f_1(x,y) \text{d}y dx=\int_a^b\int_s^t f_1(x,y) \text{d}x  \text{d}y \ \ \text{para todo intervalo }[s,t]\subset [a',b']$$ então $F'(x)=\int_a^b f_1(a,y)dy$ para quase todo $x\in (a',b')$. \\
+	
+	\textbf{ii.} Suponha que $f(\cdot, y)$ é $ACG_*$ em $[a',b']$ para quase todo $y\in (a,b)$ e $\int_a^b f_1(\cdot , y) \text{d}y$ é contínua em $[a',b']$. Se $$\int_s^t\int_a^b f_1(x,y) \text{d}y  \text{d}x=\int_a^b\int_s^t f_1(x,y) \text{d}x  \text{d}y \ \ \text{para todo intervalo }[s,t]\subset [a',b']$$ então $F'(x)=\int_a^b f_1(a,y) \text{d}y$ para todo $x\in (a',b')$.
+	
+\end{cor}
+\ \eop \\
+
+Agora apresentaremos algumas outras aplicações, esta relaciona derivadas e a propriedade de Lipschitz. O resultado será provado para funções reais, porém a demonstração é exatamente a mesma com o domínio sendo um aberto convexo num espaço de Banach e o contradomínio um outro espaço de Banach. 
+
+\begin{thrm}
+	
+	Seja $f$ uma função definida em $(a,b)$ e diferenciável em todo ponto do intervalo (não pediremos que a derivada seja contínua), então $$\sup_{x\neq y} \frac{|f(x)-f(y)|}{|x-y|} = \sup_{x\in (a,b)} |f'(x)|$$ sendo que um lado da equação é finito se, e somente se, o outro lado também for. Portanto $f$ é de Lipschitz se, e somente se, $f'$ é limitada. 
+	
+\end{thrm}   
+
+\dem Suponha que o lado esquerdo da equação é menor ou igual que $r$ e seja $L=f'(\alpha)$ e $h\in (a,b)\setminus \{0\}$, queremos mostrar que $|Lh|\leq r |h|$. Substituindo $h$ por $ch$ para uma constante não nula $c$ pequena o suficiente para que $h+\alpha \in (a,b)$, temos que $\alpha + th \in (a,b)$ para todo $t\in [0,1]$ (já que intervalos são convexos). Seja $\varepsilon > 0$ dado. Pela definição de derivada temos que $$\frac{|f(\alpha +th)-f(\alpha)-tLh|}{t|h|} < \varepsilon \ \ \text{ pata todo } t>0 \text{ suficientemente pequeno.}$$ Com isso, para tais valores de $t$ temos $|f(\alpha +th)-f(\alpha)-tLh|< t|h| \varepsilon$ portanto $$t|Lh|=|tLh|\leq |f(\alpha +th)=f(\alpha)|+\varepsilon t |h| \leq rt|h|+\varepsilon t|h|.$$ Dividindo tudo por $t$ tenis qe $|Lh|\leq (r+\varepsilon )|h|$, como a escolha de $\varepsilon$ foi arbitrária, concluímos que $|Lh| \leq r|h|$ como queríamos. 
+
+Por outro lado, suponha agora que $|f'(\alpha)|<r$ para todo $\alpha \in (a,b)$. Queremos mostrar que o lado esquerdo da equação é menor ou igual a $r$. Sejam $x,y\in (a,b)$, pela convexidade, temos que $x_t=tx+(1-t)y\in (a,b)$ pra todo $t\in [0,1]$, utilizando a Regra da Cadeia e \textbf{4.8.II} temos que $$f(x)-f(y)=\int_0^1 \frac{ \text{d}}{ \text{d}t}f(x_t) \text{d}t=\int_0^1 f'(x_t)(x-y) \text{d}t.$$
+
+Portanto $|f(x)-f(y)|\leq \int_0^1 r |x-y|dt=r|x-y|$ pelo mesmo argumento usado na demonstração de \textbf{4.7}. \eop \\
+
+Também temos aplicações para caracterizar funções convexas:
+
+\begin{thrm}
+	
+	Seja $J\subset \mathbb{R}$ um intervalo aberto e $f:J\rightarrow \mathbb{R}$ uma função. Temos que $f$ é uma função convexa se, e somente se, \\
+	
+	(i) $f$ é contínua, \\
+	
+	(ii) a derivada $f'$ existe exceto num conjunto no máximo enumerável, \\
+	
+	(iii) existe uma função crescente $g:J\rightarrow \mathbb{R}$ tal que $f'(t)=g(t)$ para todo $t\in J\setminus A$, sendo $A\cap J$ no máximo enumerável. \\
+	
+	Além disso, se $f$ é convexa, então as derivadas laterais de $f$ existem para todo ponto de $J$, sendo que $f'_+$ e $f'_-$ satisfazem as condições de $g$ definida em (iii).
+	
+\end{thrm}
+
+\dem Por um lado, supomos que a função é convexa, disso temos que $$\frac{f(y_1)-f(x_1)}{y_1-x_1} \leq \frac{f(y_1)-f(x_2)}{y_1-x_2} \leq \frac{f(y_2)-f(x_2)}{y_2-x_2} $$ para $x_1\leq x_2$, $y_1\leq y_2$ e $x_i\leq y_j$. Com isso notamos que a função $(f(y)-f(x_2))/(y-x_2)$ é crescente em $y>x_2$ e limitada inferiormente por $(f(y_1)-f(x_1))/(y_1-x_1)$. Desta forma $f'_+(x_2)$ existe para todo $x_2\in J$, logo $f$ é contínua à direita em todo ponto $x_2\in J$. Tomando limites na inequação anterior com com $y_1\rightarrow x_1^+$ e $y_2\rightarrow x_2^+$ temos que $f'_+$ é crescente. A prova pra $f'_-$ é análoga e, combinando ambos os resultados, temos que $f$ é contínua, além disso temos que as derivadas laterais são contínuas a menos de um conjunto enumerável de pontos (para mostrar isso, basta usar o resultado em [9; 15.21.c]), o que mostra que a derivada $f'$ existe a menos de um conjunto no máximo enumerável. Por fim, temos o resultado tomando $g=f'_+$ ou $g=f'_-$.
+
+Por outro lado, suponha (i), (ii) e (iii), por \textbf{3.2}, $g$ é integrável por Henstock em todo intervalo $[a,b]\subset J$ e $\int_a^b g=f(b)-f(a)$, como $g$ é crescente, supondo $a\leq b\leq c$, temos 
+
+$$\begin{array}{lll}
+
+\displaystyle\frac{f(b)-f(a)}{b-a}= \displaystyle\frac{1}{b-a}\displaystyle\int_a^b g \leq  \displaystyle\frac{1}{b-a}\displaystyle\int_a^b g(b)& = & g(b) \\
+\ & = &  \displaystyle\frac{1}{c-b}\displaystyle\int_b^c g(b) \\
+\ & \leq & \displaystyle\frac{1}{c-b}\displaystyle\int_b^c g \\
+\ & = &  \displaystyle\frac{f(c)-f(b)}{c-b}.
+\end{array}$$ 
+
+Rearranjando os termos concluímos que $$f\left(\frac{c-b}{c-a}a + \frac{b-a}{c-a}c  \right)=f(b)\leq \frac{c-b}{c-a} f(a) + \frac{b-a}{c-a} f(c)$$ o que prova que $f$ é convexa. \eop \\
+
+Podemos também demonstrar uma outra fórmula bastante útil: a Integração por Partes (mais detalhes em [12] para integrais de Lebesgue-Stieltjes), mas, antes, forneceremos uma generalização para \textbf{3.1} e \textbf{4.6}:
+
+\begin{lem}
+	
+	Sejam $f$, $g$ e $\varphi$ funções em $[a,b]$ e $f$ $\varphi$-integrável pro Henstock-Stieltjes e $F(x)=\int_a^x fd\varphi$. Portanto $fg$ é $\varphi$-integrável por Henstock-Stieltjes se, e somente se, $g$ é $F$-integrável por Henstock-Stieltjes e, com isso, temos $$\int_a^b fg  \text{d}\varphi =\int_a^b g \text{d}F.$$ 
+	
+\end{lem}
+
+\eop \\
+
+A demonstração deste resultado pode ser vista em [13 ; 3.19], apesar de que é possível demonstrar isso com o que temos neste texto, bastando adicionar as informações necessárias em \textbf{4.6}, a prova é a mesma. Disto provamos:
+
+\begin{thrm}
+	
+	Sejam $F$ e $G$ funções $ACG_*$ em quase todo ponto de $[a,b]$ então $$\int_a^b F \text{d}G + \int_a^bG \text{d}F = \int_a^b  \text{d}FG=F(b)G(b) - F(a)G(a). $$ 
+	
+\end{thrm}
+
+\dem Sejam $f$ e $g$ funções iguais às derivadas de $F$ e $G$ respectivamente onde estão definidas. Observe que $f$ e $g$ são $G,F$-integráveis por Henstock-Stieltjes respectivamente, pois suas primitivas são funções contínuas. Observe ainda que $GF$ também é $ACG_*$ em quase todo ponto de $[a,b]$ e sua derivada, onde existe, é igual a $fG+gF$, portanto, por \textbf{4.8}, temos $$\int_a^b fG+gF=F(b)G(b) - F(a)G(a)= \int_a^b  \text{d}FG.$$ Pelo resultado \textbf{5.7} (com $\varphi=Id$) e pela linearidade da integral seque o que queríamos. \eop \\ 
+
+
+
+\section{Conclusões}
+
+Podemos concluir que as integrais de calibre podem fornecer um novo ponto de vista sobre a teoria de integração e que permitem, intuitivamente e sem utilizar ferramentas mais avançadas de Teoria da Medida, generalizar aquilo que se aprende em cálculo e nos primeiros cursos de análise na reta.
+
+De um ponto de vista didático, conforme elaborado em [11], as integrais de calibre podem oferecer um nova perspectiva no ensino e na literatura básica de cálculo diferencial e integral, substituindo uma abordagem que trata somente o caso de Riemann. Uma vez que demonstrações sobre integrabilidade nestes materiais básicos são omitidas, seria possível lidar com um tipo de integral que dá mais liberdade e possibilidade, além de eliminar a necessidade de definir integrais impróprias, como provado em \textbf{4.7}. 
+
+Por outro lado, num curso de análise, em que os resultados são devidamente demonstrados, temos a imensa desvantagens dos principais teoremas e lemas terem provas bastante longas e difíceis, mesmo resultados simples como \textbf{3.4} possuem demonstrações não triviais. Além disso, mesmo considerando que podemos definir a integral de Lebesgue a partir de Henstock na reta (e não só nela, como em $\mathbb{R}^n$ ou até em variedades), seria necessário muito mais esforço e tempo para chegar no mesmo ponto de livros como [4] e [5], sendo que neles tudo foi feito de forma mais simples. Outra razão pel qual as integrais de Henstock não poderiam substituir as de Lebesgue é o justamente o que foi comentado sobre as limitações no domínio da função, como podemos ver em [13], enquanto a integral de Lebesgue pode lidar com espaços de medidas mais abstratos. Outro problema é que não podemos caracterizara e generalizar algo análogo aos espaços $L^p$ para integrais de calibre, um vez que, como observado em [6], o espaço das funções integráveis por Henstock não possuem uma topologia natural e, mesmo que consigamos definir uma semi-norma, o espaço inda não será completo. 
+
+Apesar deste espaço de funções integráveis por Henstock possuir diversas limitações, conforme comentado, o que dificulta resolver problemas que são padrões no campo de Análise, ainda existem pesquisas atuais na área, um exemplo bom que podemos destacar é o artigo [14] e, junto com ele, várias outras publicações da Márcia Federson (Professora Livre-Docente do Departamento de Matemática, ICMC-USP).  
+
+\section{Referências}
+
+\ \\
+
+[1] Talvila, Erik. \textit{Necessary and Sufficient Conditions for Differentiating under the Integral Sign.} The American Mathematical Monthly 108, no. 6 (2001): 544-48. Retrieved from http://www.jstor.org/stable/2695709 \\
+
+[2] Engelking, Ryszard. \textit{General Topology}. Revisited and completed edition. Berlin: Heldermann, 1989. Print. Sigma Ser. in Pure Mathematics; Vol. 6. \\
+
+[3] Gelbaum, Bernard R., and John M. H. Olmsted.\textit{ Counterexamples in Analysis.} Mineola, N.Y.: Dover Publications, 2003. Print. \\
+
+[4] Royden, H. L., and P. M. Fitzpatrick. \textit{Real Analysis}. 4th ed. New Delhi: Prentice-Hall, 2008. Print. \\
+
+[5] Folland, G. B.\textit{ Real Analysis: Modern Techniques and Their Applications}. 2nd ed. New York: Wiley, 1999. Print. \\
+
+[6] Kurtz, Douglas S., and Charles W. Swartz. \textit{Theories of Integration: The Integrals of Riemann, Lebesgue, Henstock-Kurzweil, and Mcshane}. River Edge, NJ: World Scientific Pub., 2004. Print. Ser. in Real Analysis. Vol. 9. \\
+
+[7] Bartle, R.G. \textit{A Modern Theory of Integration}. Providence, RI: American Mathematical Society, 2001. Print. Graduate Studies in Mathematics. Vol. 32. \\
+
+[8] Gordon, Russell A. \textit{The Integrals of Lebesgue, Denjoy, Perron, and Henstock}. Providence, RI: American Mathematical Society, 1994. Print. Graduate Studies in Mathematics. Vol. 4. \\
+ 
+[9] Schechter, Eric. \textit{Handbook of Analysis and Its Foundations}. San Diego: Academic, 1997. Print. \\
+
+[10] Jech, Thomas J.\textit{ The Axiom of Choice}. Amsterdam: North-Holland Pub., 1973. Print. \\
+
+[11] Bartle, Robert, Ralph Henstock, Jaroslav Kurzweil, Eric Schechter, Stefan Schwabik, and Rudolf Výborný. "\textit{An Open Letter to Authors of Calculus Books.}" N.p., n.d. Web. 12 June 2016. <http://www.math.vanderbilt.edu/~schectex/ccc/gauge/letter/>. \\
+
+[12] Hewitt, E. (1960).\textit{ Integration by Parts for Stieltjes Integrals}. The American Mathematical Monthly, 67(5), 419-423. doi:1. \\
+
+[13] Boccuto, A. \textit{Integration by parts with respect to the Henstock-Stieltjes integral in Riesz spaces}  N.p., n.d. Web. 12 June 2016. <http://www.dmi.unipg.it/~boccuto/lavori/granada3.pdf>  \\
+
+[14]  Federson, M., Bianconi, R. \textit{Linear integral equations of Volterra concerning the integral of Henstock}
+Real Anal. Exchange, 25(1), (1999-2000), 389-417
+
+\end{document}
+
